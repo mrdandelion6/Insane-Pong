@@ -264,7 +264,9 @@ h3 {
 
 .courseln {
     font-size: inherit;
-    margin-left: 6vw;
+    display: inline-block;
+    width: 60vw;
+    vertical-align: top;
 }
 
 footer p {
@@ -281,4 +283,12 @@ footer {
 
 .zoom {
     font-size: 20px;
+}
+
+
+@media screen and (max-width: 1840px) {
+    .courseln {
+        display: inline;
+        width: inherit;
+    }
 }
