@@ -56,6 +56,10 @@ a {
     background-color:rgb(26, 26, 26);
 }
 
+#popmenu ul {
+    margin-bottom: 30px;
+}
+
 #head-area h2, .iconbutton {
     display: none;
 }
