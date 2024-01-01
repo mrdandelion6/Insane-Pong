@@ -30,6 +30,7 @@ a {
     position: fixed;
     width: 100vw;
     justify-content: flex-end;
+    z-index: 1;
 }
 
 #popmenu {
@@ -38,6 +39,7 @@ a {
     position: fixed;
     width: 100vw;
     justify-content: center;
+    z-index: 1;
 }
 
 .hidden { /* toggle this */
@@ -300,8 +302,9 @@ footer {
 
 /* ============== CUP PONG STUFF ============== */
 
-#cupPong {
-    display: flex;
+#pongPreview {
+    /* display: flex; */
+    display: none;
     justify-content: center;
 }
 
@@ -309,7 +312,6 @@ footer {
     margin: 0;
     padding: 0;
     margin-top: 35px;
-    font-family: "Press Start 2P";
     font-size: 20px;
     font-weight: 1;
     text-align: center;
@@ -342,3 +344,18 @@ footer {
     position: relative;
 }
 
+#pongGame {
+    background-color: rgb(24, 23, 23);
+    width: calc(max(400px, 50vw));
+    height: 600px;
+    margin-top: 40px;
+    border: 2px solid whitesmoke;
+}
+
+#cupPong {
+    font-family: "Press Start 2P";
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

@@ -162,4 +162,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }, 50);
 
+    function drawBox() {
+        let box = document.querySelector("#pongGame");
+        let ctx = box.getContext("2d");
+
+        ctx.lineWidth = 0.1;
+        ctx.strokeStyle = "whitesmoke";
+        ctx.setLineDash([40, 40]);
+
+        ctx.beginPath();
+        ctx.moveTo(box.width / 2, 0.5);
+        ctx.lineTo(box.width / 2, box.height - 0.5);
+        ctx.stroke();
+    }
+
+    drawBox();
+
 });
