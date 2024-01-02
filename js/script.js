@@ -178,4 +178,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     drawBox();
 
+    function flashingText() {
+        textArr = Array.from(document.querySelectorAll("#flashing"));
+
+        setInterval(() => {
+            for (const elem of textArr) {
+                console.log(elem);
+                elem.classList.toggle('invisibleText');
+            }
+        }, 600);
+    }
+
+    flashingText();
+
 });
