@@ -303,8 +303,8 @@ footer {
 /* ============== CUP PONG STUFF ============== */
 
 #pongPreview {
-    /* display: flex; */
-    display: none;
+    display: flex;
+    /* display: none; */
     justify-content: center;
 }
 
@@ -326,7 +326,7 @@ footer {
     width: 5px;
     background-color: whitesmoke;
     position: relative;
-    margin-left: 3vw;
+    margin-left: 2vw;
 }
 
 #isliderTwo{
@@ -346,8 +346,8 @@ footer {
 
 #pongGame {
     background-color: rgb(0,0,0);
-    width: calc(max(400px, 50vw));
-    height: 600px;
+    /* width: calc(max(400px, 50vw)); */
+    /* height: 600px; */
     margin-top: 40px;
     border: 2px solid whitesmoke;
 }
@@ -362,7 +362,6 @@ footer {
 }
 
 .menuPong {
-    
     margin-top: 40px;
     height: 600px;
     width: calc(max(400px, 50vw));
@@ -371,7 +370,7 @@ footer {
     border: 2px solid whitesmoke;
 }
 
-.menuPong h2 {
+.menuPong h2, .pausedPong h2 {
     margin-bottom: 100px;
     margin-top: 60px;
     font-weight: 1;
@@ -380,8 +379,125 @@ footer {
 .menuPong p {
     margin-top: 40px;
     font-weight: 1;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.pausedPong p {
+    margin-top: 40px;
+    font-weight: 1;
+    font-size: 15px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .invisibleText {
     visibility: hidden;
 }
+
+#gameStuff{
+    position: relative;
+}
+
+/* ========== pong icons ========== */
+
+#pongSettingsIcon {
+    position: absolute;
+    top: 585px;
+    left: 10px;
+    z-index: 1;
+
+}
+#pongVolumeIcon {
+    position: absolute;
+    top: 590px;
+    left: 65px;
+    z-index: 1;
+}
+
+#pongVolumeCross {
+    visibility: hidden; /* TOGGLE THIS!! */
+    position: absolute;
+    top: 583px;
+    left: 55px;
+    z-index: 1;
+}
+
+#pongExitIcon {
+    position: absolute;
+    top: 583px;
+    left: calc(100% - 60px);
+    z-index: 1;
+    /* transform: scaleX(-1); */
+}
+
+#pongBackIcon {
+    position: absolute;
+    top: 592px;
+    left: calc(100% - 110px);
+    z-index: 1;
+}
+
+#pongRestartIcon{
+    position: absolute;
+    top: 140px;
+    left: 20%;
+}
+
+#pongResumeIcon {
+    position: absolute;
+    top: 140px;
+    left: calc(80% - 100px);
+}
+
+#pongVolumeText {
+    /* currently unused */
+    position: absolute;
+    top: 583px;
+    left: 55px;
+    z-index: 1;
+}
+
+#pongSettingsText {
+    /* currently unused */
+    position: absolute;
+    top: 583px;
+    left: -100px;
+    z-index: 1;
+}
+
+.littleIconText {
+    /* currently unused */
+    font-weight: 1;
+    font-size: 15px;
+}
+
+/* ========== pong icons ========== */
+
+.pausedPong {
+    margin-top: 40px;
+    height: 600px;
+    width: calc(max(400px, 50vw));
+    z-index: 1;
+    background-color: #00000050;
+    border: 2px solid rgba(245, 245, 245, 0);
+}
+
+
+#pongPausedTitle{
+    margin-bottom: 200px;
+}
+
+#pausedScreen {
+    position: relative;
+}
+
+#cupTitle {
+    margin: 0;
+    padding: 20px 25px 20px 0px;
+}
+
+#cupTitle:hover {
+    cursor: pointer;
+}
+

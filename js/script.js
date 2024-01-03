@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var openButton = document.getElementById('openbutton');
     var popMenu = document.getElementById('popmenu');
     var menuButtons = popMenu.querySelectorAll('a');
+    var firstRun = true;
+    var animations = [];
+    var pongPreviewButton = document.querySelector("#cupTitle");
+
+    // pong tray buttons
+    var settingsButton = document.querySelector("#pongSettingsIcon");
     
     openButton.addEventListener('click', function () {
         popMenu.classList.toggle('hidden');
@@ -13,6 +19,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    loopAnimation();
+    drawBox();
+    flashingText();
+    let iconLoop = setInterval(loopAnimation, 4800);
+
+    // RESIZING EVENTS
+    window.addEventListener("resize", () => {
+
+        // PONG PREVIEW
+        clearInterval(iconLoop);
+        loopAnimation(); // call again immediately to avoid delay
+        iconLoop = setInterval(loopAnimation, 4800);
+
+        // PONG BOX
+        drawBox();
+    });
+
+    pongPreviewButton.addEventListener("click", () => console.log("clicked preview"));
+
+
+
+    // ============================== Functions ==============================
+
+    // =========== PONG PREVIEW ===========
     function startPongIconAnimation() {
         const slider1 = document.querySelector("#isliderOne");
         const slider2 = document.querySelector("#isliderTwo");
@@ -116,11 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return [s1, s2, b1, b2];
     }
 
-    let firstRun = true;
-    let animations = [];
-
     function loopAnimation() {
-        console.log("called loop!");
         let startAnimations = function() {
             let anims = startPongIconAnimation();
             animations[0] = anims[0];
@@ -137,33 +163,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (firstRun) {
-            console.log("first run");
             startAnimations();
         } 
         
         else {
-            console.log("resetting");
             clearAnimations();
             startAnimations();
         }
 
         firstRun = false;
     }
+    // =========== PONG PREVIEW ===========
 
-    setTimeout(() => { 
-        loopAnimation();
-        let iconLoop = setInterval(loopAnimation, 4800);
 
-        window.addEventListener("resize", () => {
-            console.log("resized");
-            clearInterval(iconLoop);
-            loopAnimation(); // call again immediately to avoid delay
-            iconLoop = setInterval(loopAnimation, 4800);
-        });
-    }, 50);
+    // ============= PONG BOX =============
 
     function drawBox() {
+        let vw = window.innerWidth;
         let box = document.querySelector("#pongGame");
+        box.width = Math.max(0.5 * vw, 400); 
+
         let ctx = box.getContext("2d");
 
         ctx.lineWidth = 0.1;
@@ -174,21 +193,23 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.moveTo(box.width / 2, 0.5);
         ctx.lineTo(box.width / 2, box.height - 0.5);
         ctx.stroke();
+
+        // sliders
+        ctx.fillStyle = "whitesmoke";
+        ctx.fillRect(10, 10, 10, 100);
+        ctx.stroke();
     }
 
-    drawBox();
-
     function flashingText() {
-        textArr = Array.from(document.querySelectorAll("#flashing"));
+        textArr = Array.from(document.querySelectorAll(".flashing"));
 
         setInterval(() => {
             for (const elem of textArr) {
-                console.log(elem);
                 elem.classList.toggle('invisibleText');
             }
         }, 600);
     }
 
-    flashingText();
+    // ============= PONG BOX =============
 
 });
