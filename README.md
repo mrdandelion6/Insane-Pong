@@ -1,6 +1,6 @@
 # [faisals.me](http://faisals.me)
 
-A simple HTML/CSS website I made as a place to introduce myself informally. Employers interested in my professional background should visit my main website, [faisals.ca](https://faisals.ca) (repo link: [LINK](#)). This site also features an interactive pong game.
+A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. Employers interested in my professional background should visit my main website, [faisals.ca](https://faisals.ca) (repo link: [LINK](#)). This site also features a very interactive pong game.
 
 ## Content
 
@@ -14,7 +14,7 @@ This is the first website I've ever made, consisting mainly of text about me. He
 - **Courses Taken at UofT to Date**
 
 ### Pong Game
-Users can also play an advanced version of pong I coded from scratch! 
+Users can also play an advanced version of pong I coded from scratch! Has several menus and various difficulties of selection (see features below).
 
 
 ## Features
@@ -36,3 +36,6 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 - Customizable keybinds
 - Pausing and resuming
 - Draggable sliders for mobile
+
+### Several Interactive Views:
+- All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
