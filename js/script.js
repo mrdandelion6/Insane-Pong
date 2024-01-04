@@ -6,24 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var animations = [];
     var pongPreview = document.querySelector("#pongPreview");
     var pongPreviewButton = document.querySelector("#cupTitle");
-    var up1 = "ArrowUp";
-    var down1 = "ArrowDown";
-    var up2 = "w";
-    var down2 = "s";
-    var pongIsOpen = false;
-    var playingPong = false;
-    var pressedKeys = {"1": false,
-                       "2": false,
-                       "3": false,
-                       "4": false,
-                       up1: false,
-                       down1: false,
-                       up2: false,
-                       down2: false,
-                       "Escape": false,
-                       "m": false, 
-                       "p": false};
-
+    
     // pong tray buttons
     var settingsButton = document.querySelector("#pongSettingsIcon");
     var volumeButton = document.querySelector("#pongVolumeIcon");
@@ -73,6 +56,50 @@ document.addEventListener('DOMContentLoaded', function () {
     var soundToggleP = document.querySelector("#soundToggleP");
     var exitButtonP = document.querySelector("#exitP");
 
+    // pong items
+    var pongIsOpen = false;
+    var playingPong = 0; // 0 for not playing, 1 for SP, 2 for MP
+    var up1 = "ArrowUp";
+    var down1 = "ArrowDown";
+    var up2 = "w";
+    var down2 = "s";
+    var pressedKeys = {"1": false,
+                       "2": false,
+                       "3": false,
+                       "4": false,
+                       up1: false,
+                       down1: false,
+                       up2: false,
+                       down2: false,
+                       "Escape": false,
+                       "m": false, 
+                       "p": false};
+    let slider1 = {
+        width: 10,
+        height: 100,
+        y: gameCanvas.height / 2 - 50,
+        speed: 4
+    }
+    let slider2 = {
+        width: 10,
+        height: 100,
+        y: gameCanvas.height / 2 - 50,
+        speed: 4
+    }
+    let ball = {
+        exists: false,
+        width: 10,
+        height: 10,
+        x: gameCanvas.width / 2 - 10,
+        y: gameCanvas.height / 2 - 10,
+        startSpeed: 4,
+        regSpeed: 4, // increment this on selected mode!
+        velocityY: 0,
+        velocityX: 0
+    }
+    playerOneScore = 0;
+    playerTwoScore = 0;
+
     openButton.addEventListener('click', function () {
         popMenu.classList.toggle('hidden');
     });
@@ -96,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iconLoop = setInterval(loopAnimation, 4800);
 
         // PONG BOX
-        drawBox();
+        nextTick();
     });
 
     // preview button
@@ -179,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (["1", "2", "3", "4", "Escape", "m", "p"].includes(key)) {
             if (!pressedKeys[key]) {
                 pressedKeys[key] = true;
-                handleKeyPress(key);
+                handleKeyPress(event);
             } 
         } 
 
@@ -187,19 +214,19 @@ document.addEventListener('DOMContentLoaded', function () {
             switch(key) { // we have a switch for this because we still want to set up1, up2, down1, down2 to true 
                 case up1:
                     pressedKeys.up1 = true;
-                    handleKeyPress(key);
+                    handleKeyPress(event);
                     break;
                 case down1:
                     pressedKeys.down1 = true;
-                    handleKeyPress(key);
+                    handleKeyPress(event);
                     break;
                 case up2:
                     pressedKeys.up2 = true;
-                    handleKeyPress(key);
+                    handleKeyPress(event);
                     break;
                 case down2:
                     pressedKeys.down2 = true;
-                    handleKeyPress(key);
+                    handleKeyPress(event);
                     break;
                 default:
                     break;
@@ -235,8 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // handle the key taps
-    function handleKeyPress(key) {
-        console.log(key);
+    function handleKeyPress(event) {
+        key = event.key
         switch(key) {
             case "1":
                 switch(currentScreen) {
@@ -306,26 +333,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
 
+            // for the movement keys, handleKeyPress() only disables the default behaviour of those keys, in case they keys include up arrow and down arrow.
+            // the actual slider movement happens in drawSliders()
+
             case up1:
                 if (playingPong) {
-
+                    event.preventDefault();
                 }
                 break;
             case down1:
                 if (playingPong) {
-                    
+                    event.preventDefault();
                 }
                 break;
 
             case up2:
-                if (playingPong) {
-                    
+                if (playingPong == 2) {
+                    event.preventDefault();
                 }
                 break;
-
             case down2:
-                if (playingPong) {
-                    
+                if (playingPong == 2) {
+                    event.preventDefault();
                 }
                 break;
 
@@ -354,6 +383,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = multiplayerMenu;
     }
 
+    startSinglePlayer();
 
     // ============================== More Functions ==============================
 
@@ -494,35 +524,99 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============= PONG BOX =============
 
     function startSinglePlayer(difficulty) {
-        drawBox();
+        playingPong = 1;
+        let gameID = setInterval(nextTick, 10, difficulty);
     }
 
     function startMultiPlayer(difficulty) {
-        drawBox();
+        playingPong = 2;
+        let gameID = setInterval(nextTick, 10, difficulty);
     }
 
-    function drawBox() {
+
+    function nextTick(difficulty) {
         let vw = window.innerWidth;
         gameCanvas.width = Math.max(0.5 * vw, 400); 
         let ctx = gameCanvas.getContext("2d");
+        let blitzMode = difficulty == 4;
+        // console.log(`position is ${slider1.y}`);
+        drawBox();
+        drawSliders();
+        drawBall(); // also handles ball creation
 
-        ctx.lineWidth = 0.1;
-        ctx.strokeStyle = "whitesmoke";
-        ctx.setLineDash([40, 40]);
+        function drawBox() {
+            ctx.lineWidth = 0.1;
+            ctx.strokeStyle = "whitesmoke";
+            ctx.setLineDash([40, 40]);
+    
+            ctx.beginPath();
+            ctx.moveTo(gameCanvas.width / 2, 0.5);
+            ctx.lineTo(gameCanvas.width / 2, gameCanvas.height - 0.5);
+            ctx.stroke();
+        }
+        
+        function drawSliders() {
+            ctx.beginPath();
 
-        ctx.beginPath();
-        ctx.moveTo(gameCanvas.width / 2, 0.5);
-        ctx.lineTo(gameCanvas.width / 2, gameCanvas.height - 0.5);
-        ctx.stroke();
+            // slider1
+            ctx.fillStyle = "whitesmoke";
+            ctx.fillRect(10, slider2.y, slider2.width, slider2.height);
+            ctx.stroke();
 
-        // sliders
-        ctx.fillStyle = "whitesmoke";
-        ctx.fillRect(10, gameCanvas.height / 2 - 50, 10, 100);
-        ctx.stroke();
+            // slider2
+            ctx.fillStyle = "whitesmoke";
+            ctx.fillRect(gameCanvas.width - 20, slider1.y, slider1.width, slider1.height);
+            ctx.stroke();
 
-        ctx.fillStyle = "whitesmoke";
-        ctx.fillRect(gameCanvas.width - 20, gameCanvas.height / 2 - 50, 10, 100);
-        ctx.stroke();
+            if (pressedKeys.up1 && slider1.y > 0) {
+                slider1.y -= slider1.speed;
+            }
+            if (pressedKeys.down1 && slider1.y < 600 - slider1.width) {
+                slider1.y += slider1.speed;
+            }
+
+            if (playingPong == 2) { // multiplayer case
+                if (pressedKeys.up2 && slider2.y > 0) {
+                    slider2.y -= slider2.speed;
+                }
+                if (pressedKeys.down2 && slider2.y < 600 - slider2.width) {
+                    slider2.y += slider2.speed;
+                }
+            }
+
+        }
+
+        function drawBall() {
+            if (!ball.exists) {
+                spawnSide = (playerOneScore + playerTwoScore) % 2;
+                // 0 for spawning on right, 1 for spawning on left
+                createBall(spawnSide);
+            }
+            
+            ctx.fillStyle = "red";
+            ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
+            ctx.stroke();
+
+            ball.x += velX;
+            ball.y += velY;
+            console.log(ball.x);
+
+            function createBall(spawnSide) {
+                velY = (Math.random() * ball.startSpeed) - ball.startSpeed / 2
+                // generate a random value in [-startSpeed/2, startSpeed/2) for the y velocity
+                velX = ball.startSpeed - Math.abs(velY);
+                ball.x = gameCanvas.width / 2 - 5;
+                ball.y = gameCanvas.height / 2 - 5;
+
+                if (spawnSide) {
+                    velX = -velX;
+                }
+
+                ball.velocityX = velX;
+                ball.velocityY = velY;
+                ball.exists = true;
+            }
+        }
     }
 
     function flashingText() {
