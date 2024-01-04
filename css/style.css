@@ -30,7 +30,7 @@ a {
     position: fixed;
     width: 100vw;
     justify-content: flex-end;
-    z-index: 2;
+    z-index: 3;
 }
 
 #popmenu {
@@ -43,7 +43,7 @@ a {
 }
 
 .hidden { /* toggle this */
-    display: none;
+    display: none !important;
 }
 
 #popmenu li {
@@ -304,7 +304,6 @@ footer {
 
 #pongPreview {
     display: flex;
-    /* display: none; */
     justify-content: center;
 }
 
@@ -381,6 +380,9 @@ footer {
     font-weight: 1;
     margin-left: 0;
     margin-right: 0;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pausedPong p {
@@ -397,6 +399,10 @@ footer {
 
 #gameStuff{
     position: relative;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
 }
 
 /* ========== pong icons ========== */
@@ -405,29 +411,28 @@ footer {
     position: absolute;
     top: 585px;
     left: 10px;
-    z-index: 1;
+    z-index: 2;
 
 }
 #pongVolumeIcon {
     position: absolute;
     top: 590px;
     left: 65px;
-    z-index: 1;
+    z-index: 2;
 }
 
 #pongVolumeCross {
-    visibility: hidden; /* TOGGLE THIS!! */
     position: absolute;
     top: 583px;
     left: 55px;
-    z-index: 1;
+    z-index: 2;
 }
 
 #pongExitIcon {
     position: absolute;
     top: 583px;
     left: calc(100% - 60px);
-    z-index: 1;
+    z-index: 2;
     /* transform: scaleX(-1); */
 }
 
@@ -435,7 +440,7 @@ footer {
     position: absolute;
     top: 592px;
     left: calc(100% - 110px);
-    z-index: 1;
+    z-index: 2;
 }
 
 #pongRestartIcon{
@@ -474,6 +479,10 @@ footer {
 
 /* ========== pong icons ========== */
 
+.pongButton:hover {
+    cursor: pointer;
+}
+
 .pausedPong {
     margin-top: 40px;
     height: 600px;
@@ -501,3 +510,10 @@ footer {
     cursor: pointer;
 }
 
+#pongExitPrompt {
+    z-index: 2;
+    margin: 0;
+    height: 300px;
+    width: calc(max(400px, 16vw));
+    position: absolute;
+}
