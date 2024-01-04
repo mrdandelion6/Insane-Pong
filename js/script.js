@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var down1 = "ArrowDown";
     var up2 = "w";
     var down2 = "s";
+    var pongIsOpen = false;
     var playingPong = false;
     var pressedKeys = {"1": false,
                        "2": false,
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // preview button
     pongPreviewButton.addEventListener("click", () => {
-        console.log("play pong!");
+        pongIsOpen = true;
         pongPreview.classList.toggle("hidden"); // we can still toggle class for this because we used !important in .hidden in style.css
         pong.classList.toggle("hidden");
         mainMenu.classList.toggle("hidden");
@@ -120,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pongExitPopup.classList.toggle("hidden");
         lastScreen = null;
         currentScreen = null;
+        pongIsOpen = false;
     });
     rejectExit.addEventListener("click", () => {
         pongExitPopup.classList.toggle("hidden");
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     volumeCross.addEventListener("click", toggleVolume);
 
     // settings button
-    settingsButton.addEventListener("click", () => {
+    function openSettings() {
         if (currentScreen != settingsMenu) {
             mainMenu.classList.toggle("hidden");
             settingsMenu.classList.toggle("hidden");
@@ -142,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
             currentScreen = settingsMenu;
             backButton.classList.toggle("hidden");
         }
-    });
+    }
+    settingsButton.addEventListener("click", openSettings);
 
     // back button 
     backButton.addEventListener("click", () => {
@@ -288,6 +291,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     default:
                         break;
+                }
+                break;
+
+            case "Escape":
+                switch(currentScreen) {
+                    case gameCanvas:
+                        pauseGame();
+                    default:
+                        openSettings();
+                }
+            case "m":
+                if (pongIsOpen) {
+                    toggleVolume();
                 }
                 break;
 
