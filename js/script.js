@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     loopAnimation();
-    drawBox();
     flashingText();
     let iconLoop = setInterval(loopAnimation, 4800);
 
@@ -494,6 +493,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============= PONG BOX =============
 
+    function startSinglePlayer(difficulty) {
+        drawBox();
+    }
+
+    function startMultiPlayer(difficulty) {
+        drawBox();
+    }
+
     function drawBox() {
         let vw = window.innerWidth;
         gameCanvas.width = Math.max(0.5 * vw, 400); 
@@ -510,7 +517,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // sliders
         ctx.fillStyle = "whitesmoke";
-        ctx.fillRect(10, 10, 10, 100);
+        ctx.fillRect(10, gameCanvas.height / 2 - 50, 10, 100);
+        ctx.stroke();
+
+        ctx.fillStyle = "whitesmoke";
+        ctx.fillRect(gameCanvas.width - 20, gameCanvas.height / 2 - 50, 10, 100);
         ctx.stroke();
     }
 
