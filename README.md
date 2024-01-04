@@ -1,6 +1,6 @@
 # [faisals.me](http://faisals.me)
 
-A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. Employers interested in my professional background should visit my main website, [faisals.ca](https://faisals.ca) (repo link: [LINK](#)). This site also features a very interactive pong game.
+A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. This site also features a very interactive pong game with several different views, modes, and features! Employers who are interested in seeing my professional website should visit here, [faisals.ca](https://faisals.ca) (repo link: [LINK](#)). 
 
 ## Content
 
