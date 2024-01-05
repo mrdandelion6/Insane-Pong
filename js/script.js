@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
         y: gameCanvas.height / 2 - 50,
         x: 0, // calc x in drawSlider()
         speed: 6,
-        velocityY: 0
+        velocityY: 0,
+        dash: false
     }
     let slider2 = {
         width: 10,
@@ -88,10 +89,12 @@ document.addEventListener('DOMContentLoaded', function () {
         y: gameCanvas.height / 2 - 50,
         x: 10,
         speed: 6,
-        velocityY: 0
+        velocityY: 0,
+        dash: false
     }
     let ball = {
         exists: false,
+        serve: true,
         width: 10,
         height: 10,
         x: gameCanvas.width / 2 - 10,
@@ -99,10 +102,18 @@ document.addEventListener('DOMContentLoaded', function () {
         startSpeed: 4,
         regSpeed: 4, // increment this on selected mode!
         velocityY: 0,
-        velocityX: 0
+        velocityX: 0,
+        onFire: false
     }
-    playerOneScore = 0;
-    playerTwoScore = 0;
+    var upDashWindow1 = false; // tapping a key during dash window gives u boost
+    var downDashWindow1 = false;
+    var upDashWindow2 = false;
+    var downDashWindow2 = false;
+    var dashWindowID1;
+    var dashWindowID2;
+    
+    var playerOneScore = 0;
+    var playerTwoScore = 0;
 
     openButton.addEventListener('click', function () {
         popMenu.classList.toggle('hidden');
@@ -238,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // update key pressed status when key is released
+    // update key pressed status when key is released, also manage dash window
     document.addEventListener("keyup", (event) => {
         let key = event.key;
         if (["1", "2", "3", "4", "Escape", "m", "p"].includes(key)) {
@@ -249,16 +260,43 @@ document.addEventListener('DOMContentLoaded', function () {
             switch(key) { 
                 case up1:
                     pressedKeys.up1 = false;
+                    if (slider1.dash) {
+                        slider1.dash = false; // if we were just in a dash, then a keyup shouldnt create another window!
+                    }
+                    else {
+                        upDashWindow1 = true;
+                        dashWindowID = setTimeout(() => upDashWindow1 = false, 100);
+                    }
                     break;
                 case down1:
                     pressedKeys.down1 = false;
+                    if (slider1.dash) {
+                        slider1.dash = false;
+                    }
+                    else {
+                        downDashWindow1 = true;
+                        dashWindowID = setTimeout(() => downDashWindow1 = false, 100);
+                    }
                     break;
                 case up2:
                     pressedKeys.up2 = false;
+                    if (slider2.dash) {
+                        slider2.dash = false;
+                    }
+                    else {
+                        upDashWindow2 = true;
+                        dashWindowID = setTimeout(() => upDashWindow2 = false, 100);
+                    }
                     break;
                 case down2:
                     pressedKeys.down2 = false;
-
+                    if (slider2.dash) {
+                        slider2.dash = false;
+                    }
+                    else {
+                        downDashWindow2 = true;
+                        dashWindowID = setTimeout(() => downDashWindow2 = false, 100);
+                    }
                     break;
                 default:
                     break;
@@ -338,28 +376,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 break;
 
-            // for the movement keys, handleKeyPress() only disables the default behaviour of those keys, in case they keys include up arrow and down arrow.
+            // for the movement keys, handleKeyPress() disables the default behaviour of those keys, in case they keys include up arrow and down arrow.
             // the actual slider movement happens in drawSliders()
+            // handleKeyPress() also manages dashing windows
 
             case up1:
                 if (playingPong) {
                     event.preventDefault();
+                    if (upDashWindow1) { // handle dash
+                        slider1.dash = true;
+                    }
+                    else {
+                        clearTimeout(dashWindowID1); // clear timer as we are closing window now anyways (this step isnt necessary, just to prevent clog)
+                        downDashWindow1 = false; // kill the down dash window
+                        slider1.dash = false; // kill a current dash
+                    }
                 }
                 break;
             case down1:
                 if (playingPong) {
                     event.preventDefault();
+                    if (downDashWindow1) { 
+                        slider1.dash = true;
+                    }
+                    else {
+                        clearTimeout(dashWindowID1);
+                        upDashWindow1 = false;
+                        slider1.dash = false;
+                    }
                 }
                 break;
 
             case up2:
                 if (playingPong == 2) {
                     event.preventDefault();
+                    if (upDashWindow2) {
+                        slider2.dash = true;
+                    }
+                    else {
+                        clearTimeout(dashWindowID2);
+                        downDashWindow2 = false;
+                        slider2.dash = false;
+                    }
                 }
                 break;
             case down2:
                 if (playingPong == 2) {
                     event.preventDefault();
+                    if (downDashWindow2) { 
+                        slider2.dash = true;
+                    }
+                    else {
+                        clearTimeout(dashWindowID2);
+                        upDashWindow2 = false;
+                        slider2.dash = false;
+                    }
                 }
                 break;
 
@@ -388,8 +459,8 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = multiplayerMenu;
     }
 
-    // startSinglePlayer(4);
-    startMultiPlayer(4);
+    startSinglePlayer(4);
+    // startMultiPlayer(4);
 
     // ============================== More Functions ==============================
 
@@ -410,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let s = 1;
 
             return setInterval(() => {
-                
                 if (y == 0) {
                     goingUp = false;
                     y += s;
@@ -527,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // =========== PONG PREVIEW ===========
 
 
-    // ============= PONG BOX =============
+    // ============= PONG GAME =============
 
     function startSinglePlayer(difficulty) {
         ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
@@ -546,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return 5;
             }
             else if (difficulty == 4) {
-                return 8.5;
+                return 9.5;
             }
         }
     }
@@ -581,6 +651,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         function drawSliders() {
+
             ctx.beginPath();
 
             // slider2
@@ -596,9 +667,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (pressedKeys.up1 && !pressedKeys.down1 && slider1.y > 0) {
                 slider1.velocityY = -slider1.speed;
+                if (slider1.dash) {
+                    slider1.velocityY = (-3) * slider1.speed;
+                    console.log("UP DASH!");
+                }
             }
             else if (pressedKeys.down1 && !pressedKeys.up1 && slider1.y < 600 - slider1.height) {
                 slider1.velocityY = slider1.speed;
+                if (slider1.dash) {
+                    slider1.velocityY = 3 * slider1.speed;
+                    console.log("DOWN DASH!");
+                }
             }
             else {
                 slider1.velocityY = 0;
@@ -607,9 +686,17 @@ document.addEventListener('DOMContentLoaded', function () {
             if (playingPong == 2) { // multiplayer case
                 if (pressedKeys.up2 && !pressedKeys.down2 &&  slider2.y > 0) {
                     slider2.velocityY = -slider2.speed;
+                    if (slider2.dash) {
+                        slider2.velocityY = (-3) * slider2.speed;
+                        console.log("2 UP DASH!");
+                    }
                 }
                 else if (pressedKeys.down2 && !pressedKeys.up2 && slider2.y < 600 - slider2.height) {
                     slider2.velocityY = slider2.speed;
+                    if (slider2.dash) {
+                        slider2.velocityY = 3 * slider2.speed;
+                        console.log("2 DOWN DASH!");
+                    }
                 }
                 else {
                     slider2.velocityY = 0;
@@ -677,6 +764,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ball.velocityX = velX;
                 ball.velocityY = velY;
                 ball.exists = true;
+                ball.serve = true;
             }
         }
 
@@ -691,10 +779,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 ball.exists = false;
             }
 
-            let frontHit1 = ((ball.x + ball.width) > slider1.x) && (ball.y + ball.height > slider1.y) && (ball.y < slider1.y + slider1.height);
-            let frontHit2 = (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
+            let sliderHit1 = ((ball.x + ball.width) > slider1.x) && (ball.y + ball.height > slider1.y) && (ball.y < slider1.y + slider1.height);
+            let sliderHit2 = (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
 
-            if (frontHit1) {
+            if (sliderHit1) {
+                ball.onFire = false;
                 let velY = ball.velocityY + slider1.velocityY;
                 let neg = velY < 0;
                 velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
@@ -702,11 +791,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (neg) {
                     velY = -velY;
                 }
+                if (slider1.dash && !ball.serve) {
+                    velX *= 1.5;
+                    velY *= 1.5;
+                    ball.onFire = true;
+                }
                 ball.velocityX = velX;
                 ball.velocityY = velY;
+                ball.serve = false;
             }
 
-            else if (frontHit2) {
+            else if (sliderHit2) {
+                ball.onFire = false;
                 let velY = ball.velocityY + slider2.velocityY;
                 let neg = velY < 0;
                 velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
@@ -714,8 +810,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (neg) {
                     velY = -velY;
                 }
+                if (slider2.dash && !ball.serve) {
+                    velX *= 1.5;
+                    velY *= 1.5;
+                    ball.onFire = true;
+                }
                 ball.velocityX = velX;
                 ball.velocityY = velY;
+                ball.serve = false;
             }
 
         }
@@ -731,6 +833,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 600);
     }
 
-    // ============= PONG BOX =============
+    // ============= PONG GANE =============
 
 });
