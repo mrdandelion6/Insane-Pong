@@ -78,13 +78,17 @@ document.addEventListener('DOMContentLoaded', function () {
         width: 10,
         height: 100,
         y: gameCanvas.height / 2 - 50,
-        speed: 4
+        x: 0, // calc x in drawSlider()
+        speed: 6,
+        velocityY: 0
     }
     let slider2 = {
         width: 10,
         height: 100,
         y: gameCanvas.height / 2 - 50,
-        speed: 4
+        x: 10,
+        speed: 6,
+        velocityY: 0
     }
     let ball = {
         exists: false,
@@ -254,6 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 case down2:
                     pressedKeys.down2 = false;
+
                     break;
                 default:
                     break;
@@ -383,7 +388,8 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = multiplayerMenu;
     }
 
-    startSinglePlayer();
+    // startSinglePlayer(4);
+    startMultiPlayer(4);
 
     // ============================== More Functions ==============================
 
@@ -524,11 +530,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============= PONG BOX =============
 
     function startSinglePlayer(difficulty) {
+        ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
+        slider2.speed = assignCpu(difficulty);
         playingPong = 1;
         let gameID = setInterval(nextTick, 10, difficulty);
+
+        function assignCpu(difficulty) {
+            if (difficulty == 1) {
+                return 2;
+            }
+            else if (difficulty == 2) {
+                return 3;
+            }
+            else if (difficulty == 3) {
+                return 5;
+            }
+            else if (difficulty == 4) {
+                return 8.5;
+            }
+        }
     }
 
     function startMultiPlayer(difficulty) {
+        ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
         playingPong = 2;
         let gameID = setInterval(nextTick, 10, difficulty);
     }
@@ -539,10 +563,11 @@ document.addEventListener('DOMContentLoaded', function () {
         gameCanvas.width = Math.max(0.5 * vw, 400); 
         let ctx = gameCanvas.getContext("2d");
         let blitzMode = difficulty == 4;
-        // console.log(`position is ${slider1.y}`);
+
         drawBox();
         drawSliders();
         drawBall(); // also handles ball creation
+        checkCollision(); // also handles goals
 
         function drawBox() {
             ctx.lineWidth = 0.1;
@@ -558,55 +583,92 @@ document.addEventListener('DOMContentLoaded', function () {
         function drawSliders() {
             ctx.beginPath();
 
-            // slider1
-            ctx.fillStyle = "whitesmoke";
-            ctx.fillRect(10, slider2.y, slider2.width, slider2.height);
-            ctx.stroke();
-
             // slider2
             ctx.fillStyle = "whitesmoke";
-            ctx.fillRect(gameCanvas.width - 20, slider1.y, slider1.width, slider1.height);
+            ctx.fillRect(slider2.x, slider2.y, slider2.width, slider2.height);
             ctx.stroke();
 
-            if (pressedKeys.up1 && slider1.y > 0) {
-                slider1.y -= slider1.speed;
+            // slider1
+            slider1.x = gameCanvas.width - 20;
+            ctx.fillStyle = "whitesmoke";
+            ctx.fillRect(slider1.x, slider1.y, slider1.width, slider1.height);
+            ctx.stroke();
+
+            if (pressedKeys.up1 && !pressedKeys.down1 && slider1.y > 0) {
+                slider1.velocityY = -slider1.speed;
             }
-            if (pressedKeys.down1 && slider1.y < 600 - slider1.width) {
-                slider1.y += slider1.speed;
+            else if (pressedKeys.down1 && !pressedKeys.up1 && slider1.y < 600 - slider1.height) {
+                slider1.velocityY = slider1.speed;
+            }
+            else {
+                slider1.velocityY = 0;
             }
 
             if (playingPong == 2) { // multiplayer case
-                if (pressedKeys.up2 && slider2.y > 0) {
-                    slider2.y -= slider2.speed;
+                if (pressedKeys.up2 && !pressedKeys.down2 &&  slider2.y > 0) {
+                    slider2.velocityY = -slider2.speed;
                 }
-                if (pressedKeys.down2 && slider2.y < 600 - slider2.width) {
-                    slider2.y += slider2.speed;
+                else if (pressedKeys.down2 && !pressedKeys.up2 && slider2.y < 600 - slider2.height) {
+                    slider2.velocityY = slider2.speed;
+                }
+                else {
+                    slider2.velocityY = 0;
+                }
+            } 
+
+            else {
+                let centerSlider2 = slider2.y + slider2.height / 2;
+                let centerBall = ball.y + ball.height / 2;
+
+                let near = (slider2.y < centerBall ) && (centerBall < slider2.y + slider2.height);
+
+                if ((centerSlider2 < centerBall) && (slider2.y < 600 - slider2.height)) { // ball is lower than slider 
+                    if (near) {
+                        slider2.velocityY = Math.min(slider2.speed, Math.abs(ball.velocityY) + 0.1);
+                    }
+                    else {
+                        slider2.velocityY = slider2.speed;
+                    }
+                }
+                else if ((centerSlider2 > centerBall) &&  (slider2.y > 0)) { // ball is higher than slider
+                    if (near) {
+                        slider2.velocityY = Math.min(slider2.speed, Math.abs(ball.velocityY) + 0.1);
+                    }
+                    else {
+                        slider2.velocityY = slider2.speed;
+                    }
+                    slider2.velocityY = -slider2.velocityY;
+                }
+                else {
+                    slider2.velocityY = 0;
                 }
             }
 
+            slider1.y += slider1.velocityY;
+            slider2.y += slider2.velocityY;
         }
 
         function drawBall() {
+            
             if (!ball.exists) {
                 spawnSide = (playerOneScore + playerTwoScore) % 2;
                 // 0 for spawning on right, 1 for spawning on left
                 createBall(spawnSide);
             }
-            
+
             ctx.fillStyle = "red";
             ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
             ctx.stroke();
 
-            ball.x += velX;
-            ball.y += velY;
-            console.log(ball.x);
+            ball.x += ball.velocityX;
+            ball.y += ball.velocityY;
 
             function createBall(spawnSide) {
-                velY = (Math.random() * ball.startSpeed) - ball.startSpeed / 2
+                let velY = (Math.random() * ball.startSpeed) - ball.startSpeed / 2
                 // generate a random value in [-startSpeed/2, startSpeed/2) for the y velocity
-                velX = ball.startSpeed - Math.abs(velY);
-                ball.x = gameCanvas.width / 2 - 5;
-                ball.y = gameCanvas.height / 2 - 5;
+                let velX = ball.startSpeed - Math.abs(velY);
+                ball.x = gameCanvas.width / 2 - ball.width / 2;
+                ball.y = gameCanvas.height / 2 - ball.height / 2;
 
                 if (spawnSide) {
                     velX = -velX;
@@ -616,6 +678,46 @@ document.addEventListener('DOMContentLoaded', function () {
                 ball.velocityY = velY;
                 ball.exists = true;
             }
+        }
+
+        function checkCollision() {
+            let verticalBounce = ball.y <= 0 || ball.y >= (gameCanvas.height - ball.height)
+            if (verticalBounce) {
+                ball.velocityY = -ball.velocityY;
+            }
+
+            let goal = (ball.x <= 0) || (ball.x >= (gameCanvas.width - ball.width));
+            if (goal) {
+                ball.exists = false;
+            }
+
+            let frontHit1 = ((ball.x + ball.width) > slider1.x) && (ball.y + ball.height > slider1.y) && (ball.y < slider1.y + slider1.height);
+            let frontHit2 = (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
+
+            if (frontHit1) {
+                let velY = ball.velocityY + slider1.velocityY;
+                let neg = velY < 0;
+                velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
+                let velX = -(ball.regSpeed - velY);
+                if (neg) {
+                    velY = -velY;
+                }
+                ball.velocityX = velX;
+                ball.velocityY = velY;
+            }
+
+            else if (frontHit2) {
+                let velY = ball.velocityY + slider2.velocityY;
+                let neg = velY < 0;
+                velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
+                let velX = ball.regSpeed - velY;
+                if (neg) {
+                    velY = -velY;
+                }
+                ball.velocityX = velX;
+                ball.velocityY = velY;
+            }
+
         }
     }
 
