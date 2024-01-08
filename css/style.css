@@ -305,6 +305,7 @@ footer {
 #pongPreview {
     display: flex;
     justify-content: center;
+    user-select: none;
 }
 
 .pongTitle {
@@ -392,10 +393,6 @@ footer {
     margin-right: auto;
 }
 
-#musicToggleP, #soundToggleP {
-    margin-left: calc(12vw);
-}
-
 .invisibleText {
     visibility: hidden;
 }
@@ -447,13 +444,13 @@ footer {
     z-index: 2;
 }
 
-#pongRestartIcon{
+#pongResumeIcon {
     position: absolute;
     top: 140px;
     left: 20%;
 }
 
-#pongResumeIcon {
+#pongRestartIcon {
     position: absolute;
     top: 140px;
     left: calc(80% - 100px);
@@ -513,7 +510,7 @@ footer {
     cursor: pointer;
 }
 
-#pongExitPrompt, #pongSPPrompt, #pongMPPrompt, #backToMenuPrompt {
+#pongExitPrompt, #pongSPPrompt, #pongMPPrompt, #backToMenuPrompt, #restartPrompt {
     z-index: 2;
     margin: 0;
     height: 300px;
@@ -567,5 +564,9 @@ footer {
 
 #musicToggle, #soundToggle {
     font-size: 16px;
-    margin-left: calc(12vw);
+}
+
+.volumePar {
+    margin-left: calc(12vw) !important;
+    margin-right: 0;
 }

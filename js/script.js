@@ -53,10 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var pauseMenu = document.querySelector("#pausedScreen");
     var gameCanvas = document.querySelector("#pongGame");
     var ctx = gameCanvas.getContext("2d");
+    // popups
     var pongExitPopup = document.querySelector("#pongExitPrompt"); 
     var pongBackToSPPopup = document.querySelector("#pongSPPrompt"); 
     var pongBackToMPPopup = document.querySelector("#pongMPPrompt"); 
     var pongBackToMainMenuPopup = document.querySelector("#backToMenuPrompt");
+    var restartPopup = document.querySelector("#restartPrompt");
     
     // managing screen
     let currentScreen;
@@ -66,32 +68,37 @@ document.addEventListener('DOMContentLoaded', function () {
     // pong text buttons
     var confirmExit = document.querySelector("#exitY"); // exit popup
     var rejectExit = document.querySelector("#exitN");
-    var confirmBackSP = document.querySelector("#difficultyY");
+
+    var confirmBackMM = document.querySelector("#mainMenuY"); // back popup mm
+    var rejectBackMM = document.querySelector("#mainMenuN");
+
+    var confirmBackSP = document.querySelector("#difficultyY"); // back popup sp
     var rejectBackSP = document.querySelector("#difficultyN");
-    var confirmBackMP = document.querySelector("#speedY");
+
+    var confirmBackMP = document.querySelector("#speedY"); // back popup mp
     var rejectBackMP = document.querySelector("#speedN");
 
-    var confirmBackMainMenu = document.querySelector("#mainMenuY");
-    var rejectBackMainMenu = document.querySelector("#mainMenuN");
+    var confirmRestart = document.querySelector("#restartY"); // resstart popup
+    var rejectRestart = document.querySelector("#restartN");
 
-    var selectMP = document.querySelector("#chooseMP"); // main menu
+    var selectMP = document.querySelector("#chooseMP"); // main menu buttons
     var selectSP = document.querySelector("#chooseSP");
 
-    var easyModeSP = document.querySelector("#SPeasy"); // single player menu
+    var easyModeSP = document.querySelector("#SPeasy"); // single player menu buttons
     var mediumModeSP = document.querySelector("#SPmed");
     var hardModeSP = document.querySelector("#SPhard");
     var impossibleModeSP = document.querySelector("#SPimpossible");
 
-    var slowModeMP = document.querySelector("#MPslow"); // multiplayer menu
+    var slowModeMP = document.querySelector("#MPslow"); // multiplayer menu buttons
     var mediumModeMP = document.querySelector("#MPmed");
     var fastModeMP = document.querySelector("#MPfast");
     var blitzModeMP = document.querySelector("#MPblitz");
 
-    var bindings = document.querySelector("#bindings"); // settings menu
+    var bindings = document.querySelector("#bindings"); // settings menu buttons
     var musicToggle = document.querySelector("#musicToggle");
     var soundToggle = document.querySelector("#soundToggle");
 
-    var bindingsP = document.querySelector("#bindingsP"); // pause menu
+    var bindingsP = document.querySelector("#bindingsP"); // pause menu buttons
     var musicToggleP = document.querySelector("#musicToggleP");
     var soundToggleP = document.querySelector("#soundToggleP");
     var exitButtonP = document.querySelector("#exitP");
@@ -281,6 +288,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============ PONG BUTTONS ============
 
+    // resume button
+    resumeButton.addEventListener("click", () => {
+        currentScreen.classList.toggle("hidden");
+        lastScreen = currentScreen;
+        currentScreen = gameCanvas;
+        resumeGame();
+        hideVolumeBars();
+    });
+
+    // restart button
+    restartButton.addEventListener("click", () => {
+        if (currentScreen != restartPopup) {
+            restartPopup.classList.toggle("hidden");
+            lastScreen = currentScreen;
+            currentScreen = restartPopup;
+        }
+    });
+
+    confirmRestart.addEventListener("click", restartPong);
+    rejectRestart.addEventListener("click", cancelRestart);
+
+    function restartPong() {
+        restartPopup.classList.toggle("hidden");
+        pauseMenu.classList.toggle("hidden");
+        lastScreen = pauseMenu;
+        currentScreen  = gameCanvas;
+
+        let tempDiff = difficulty;
+        let tempPlayingPong = playingPong;
+        endGame();
+        difficulty = tempDiff;
+        playingPong = tempPlayingPong;
+        initializeGame();
+        drawBoard();
+        redrawSliders();
+        resumeGame();
+        hideVolumeBars();
+    }
+    function cancelRestart() {
+        restartPopup.classList.toggle("hidden");
+        currentScreen = lastScreen; // don't set last screen
+    }
+
     // exit button
     exitButton.addEventListener("click", () => {
         pongExitPopup.classList.toggle("hidden");
@@ -354,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    confirmBackMainMenu.addEventListener("click", confirmMMexit);
+    confirmBackMM.addEventListener("click", confirmMMexit);
     function confirmMMexit() {
         hideVolumeBars();
         currentScreen.classList.toggle("hidden");
@@ -367,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
         backButton.classList.toggle("hidden");
     }
 
-    rejectBackMainMenu.addEventListener("click", rejectMMexit);
+    rejectBackMM.addEventListener("click", rejectMMexit);
     function rejectMMexit() {
         pongBackToMainMenuPopup.classList.toggle("hidden");
         lastScreen = currentScreen
@@ -892,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (type == "sound") {
                 soundKnob.style.left = horizontalPos + "px";
                 soundKnobS.style.left = (horizontalPos2 + 4) + "px";
-                soundVol = 100 * horizontalPos / sliderReference.width;
+                soundVol = 100 * (horizontalPos + 4) / sliderReference.width;
             }
             else if (type == "sound2") {
                 soundKnobS.style.left = horizontalPos2 + "px";
@@ -928,7 +978,7 @@ document.addEventListener('DOMContentLoaded', function () {
             startDraggingPong("slider1");
         }
 
-        else if (insideSlider2(x, y)) {
+        else if (insideSlider2(x, y) && (playingPong === 2)) {
             console.log("you clicked slider 2");
             slider2.held = true;
             startDraggingPong("slider2");
@@ -998,17 +1048,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============================== MORE FUNCTIONS ==============================
     
     // ============= PONG GAME =============
-    function startSinglePlayer() {
-        // console.log(`starting single player ${difficulty}`);
-        currentScreen.classList.toggle("hidden");
-        gameCanvas.classList.toggle("hidden");
-        lastScreen = currentScreen;
-        currentScreen = gameCanvas;
-        
+    function initializeGame() {
         ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
-        slider2.speed = assignCpu();
-        playingPong = 1;
-        gameID = setInterval(nextTick, 10);
+
+        if (difficulty === 1) {
+            slider2.speed = assignCpu();
+        }
 
         function assignCpu() {
             if (difficulty == 1) {
@@ -1026,6 +1071,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function startSinglePlayer() {
+        // console.log(`starting single player ${difficulty}`);
+        currentScreen.classList.toggle("hidden");
+        gameCanvas.classList.toggle("hidden");
+        lastScreen = currentScreen;
+        currentScreen = gameCanvas;
+        
+        playingPong = 1;
+        initializeGame();
+        gameID = setInterval(nextTick, 10);
+    }
+
     function startMultiplayer() {
         // console.log(`starting multi player ${difficulty}`);
         currentScreen.classList.toggle("hidden");
@@ -1033,8 +1090,8 @@ document.addEventListener('DOMContentLoaded', function () {
         lastScreen = currentScreen;
         currentScreen = gameCanvas;
 
-        ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
         playingPong = 2;
+        initializeGame();
         gameID = setInterval(nextTick, 10);
     }
 

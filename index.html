@@ -26,24 +26,24 @@
                     <li><a href="#courses"><h2 class="topbutton">courses</h2></a></li>
                     <li>
                         <div id="openbutton" class="smallmenu">
-                            <img src="img/menu_bar.png" alt="menu bar">
+                            <img src="img/menu_bar.png" alt="menu bar" draggable="false" ondragstart="return false;">
                         </div>
                     </li>
                     <li>
                         <div class="cornerpanel">
                             <a href="mailto:faisal.shaik@mail.utoronto.ca" target="_blank">
                                 <div class="iconbutton">
-                                    <img src="img/emale.png" alt="email icon">
+                                    <img src="img/emale.png" alt="email icon" draggable="false" ondragstart="return false;">
                                 </div>
                             </a>
                             <a href="https://github.com/mrdandelion6" target="_blank">
                                 <div class="iconbutton">
-                                    <img src="img/git_logo.png" alt="github icon">
+                                    <img src="img/git_logo.png" alt="github icon" draggable="false" ondragstart="return false;">
                                 </div>
                             </a>
                             <a href="">
                                 <div class="iconbutton">
-                                    <img src="img/main_page.png" alt="github icon">
+                                    <img src="img/main_page.png" alt="github icon" draggable="false" ondragstart="return false;">
                                 </div>
                             </a>
                         </div>
@@ -88,11 +88,11 @@
 
         <div id="gameStuff" class="hidden">
 
-            <img id="pongSettingsIcon" src="img/pong/settings.png" alt="Pong Settings Icon" width="50" class="pongButton">
-            <img id="pongVolumeIcon" src="img/pong/volume.png" alt="Pong Volume Icon" width="35" class="pongButton">
-            <img id="pongVolumeCross" src="img/pong/cross.png" alt="Pong Volume Crossed Icon" width="55" class="pongButton hidden">
-            <img id="pongExitIcon" src="img/pong/exit.png" alt="Pong Exit Icon" width="55" class="pongButton">
-            <img id="pongBackIcon" src="img/pong/back.png" alt="Pong Back Icon" width="40" class="pongButton hidden">
+            <img id="pongSettingsIcon" src="img/pong/settings.png" alt="Pong Settings Icon" width="50" class="pongButton" draggable="false" ondragstart="return false;">
+            <img id="pongVolumeIcon" src="img/pong/volume.png" alt="Pong Volume Icon" width="35" class="pongButton" draggable="false" ondragstart="return false;">
+            <img id="pongVolumeCross" src="img/pong/cross.png" alt="Pong Volume Crossed Icon" width="55" class="pongButton hidden" draggable="false" ondragstart="return false;">
+            <img id="pongExitIcon" src="img/pong/exit.png" alt="Pong Exit Icon" width="55" class="pongButton" draggable="false" ondragstart="return false;">
+            <img id="pongBackIcon" src="img/pong/back.png" alt="Pong Back Icon" width="40" class="pongButton hidden" draggable="false" ondragstart="return false;">
 
             <div id="pongExitPrompt" class="menuPong hidden">
                 <p>exit pong ?</p>
@@ -109,6 +109,10 @@
             <div id="backToMenuPrompt" class="menuPong hidden">
                 <p>back to main menu ?</p>
                 <p style="margin-top: 60px;"><span id="mainMenuY" class="pongButton">(Y) yes</span> &nbsp; <span id="mainMenuN" class="pongButton">(N) no</span></p>
+            </div>
+            <div id="restartPrompt" class="menuPong hidden">
+                <p>restart game ?</p>
+                <p style="margin-top: 60px;"><span id="restartY" class="pongButton">(Y) yes</span> &nbsp; <span id="restartN" class="pongButton">(N) no</span></p>
             </div>
 
             <div id="pongMenu" class="menuPong hidden">
@@ -133,16 +137,16 @@
             <div id="pongSettings" class="menuPong hidden">
                 <h2 class="pongTitle"><span class="flashing">></span> settings</h2>
                 <p id="bindings" class="pongButton">(1) bindings</p>
-                <p><span id="musicToggle" class="pongButton">music:</span> <span id="pongMusicS">100</span></p>
-                <p><span id="soundToggle" class="pongButton">sound:</span> <span id="pongSoundS">100</span></p>
+                <p class="volumePar"><span id="musicToggle" class="pongButton">music:</span> <span id="pongMusicS">100</span></p>
+                <p class="volumePar"><span id="soundToggle" class="pongButton">sound:</span> <span id="pongSoundS">100</span></p>
             </div>
             <div id="pausedScreen" class="pausedPong hidden">
-                <img id="pongRestartIcon" src="img/pong/play.png" alt="Continue Pong Button" width="100">
-                <img id="pongResumeIcon" src="img/pong/restart.png" alt="Restart Pong Button" width="100">
+                <img id="pongRestartIcon" class="pongButton" src="img/pong/restart.png" alt="Continue Pong Button" width="100" draggable="false" ondragstart="return false;">
+                <img id="pongResumeIcon" class="pongButton" src="img/pong/play.png" alt="Restart Pong Button" width="100" draggable="false" ondragstart="return false;">
                 <h2 id="pongPausedTitle" class="pongTitle"><span class="flashing">></span> paused</h2>
                 <p id="bindingsP" class="pongButton">(1) bindings</p>
-                <p> <span id="musicToggleP" class="pongButton">music:</span> <span id="pongMusic">100</span></p>
-                <p><span id="soundToggleP" class="pongButton">sound:</span> <span id="pongSound">100</span></p>
+                <p class="volumePar"> <span id="musicToggleP" class="pongButton">music:</span> <span id="pongMusic">100</span></p>
+                <p class="volumePar"><span id="soundToggleP" class="pongButton">sound:</span> <span id="pongSound">100</span></p>
                 <p id="exitP" class="pongButton">(2) back to menu</p>
             </div>
 
