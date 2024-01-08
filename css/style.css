@@ -378,8 +378,6 @@ footer {
 .menuPong p {
     margin-top: 40px;
     font-weight: 1;
-    margin-left: 0;
-    margin-right: 0;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -389,8 +387,13 @@ footer {
     margin-top: 40px;
     font-weight: 1;
     font-size: 15px;
-    margin-left: 0;
-    margin-right: 0;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#musicToggleP, #soundToggleP {
+    margin-left: calc(12vw);
 }
 
 .invisibleText {
@@ -403,35 +406,36 @@ footer {
     align-items: center;
     text-align: center;
     justify-content: center;
+    user-select: none;
 }
 
 /* ========== pong icons ========== */
 
 #pongSettingsIcon {
     position: absolute;
-    top: 585px;
-    left: 10px;
+    top: 583px;
+    left: 23px;
     z-index: 2;
 
 }
 #pongVolumeIcon {
     position: absolute;
     top: 590px;
-    left: 65px;
+    left: 76px;
     z-index: 2;
 }
 
 #pongVolumeCross {
     position: absolute;
     top: 583px;
-    left: 55px;
+    left: 65px;
     z-index: 2;
 }
 
 #pongExitIcon {
     position: absolute;
     top: 583px;
-    left: calc(100% - 60px);
+    left: calc(100% - 75px);
     z-index: 2;
     /* transform: scaleX(-1); */
 }
@@ -439,7 +443,7 @@ footer {
 #pongBackIcon {
     position: absolute;
     top: 592px;
-    left: calc(100% - 110px);
+    left: calc(100% - 120px);
     z-index: 2;
 }
 
@@ -488,17 +492,16 @@ footer {
     height: 600px;
     width: calc(max(400px, 50vw));
     z-index: 1;
-    background-color: #00000050;
+    background-color: #000000e8;
     border: 2px solid rgba(245, 245, 245, 0);
 }
-
 
 #pongPausedTitle{
     margin-bottom: 200px;
 }
 
 #pausedScreen {
-    position: relative;
+    position: absolute;
 }
 
 #cupTitle {
@@ -510,10 +513,59 @@ footer {
     cursor: pointer;
 }
 
-#pongExitPrompt {
+#pongExitPrompt, #pongSPPrompt, #pongMPPrompt, #backToMenuPrompt {
     z-index: 2;
     margin: 0;
     height: 300px;
     width: calc(max(400px, 16vw));
     position: absolute;
+}
+
+#musicSlider {
+    position: absolute;
+    top: 395px;
+    left: calc(15vw + 180px);
+    z-index: 1;
+}
+
+#soundSlider {
+    position: absolute;
+    top: 455px;
+    left: calc(15vw + 180px);;
+    z-index: 1;
+}
+
+#musicSliderS {
+    position: absolute;
+    top: 300px;
+    left: calc(15vw + 180px);
+    z-index: 1;
+}
+
+#soundSliderS {
+    position: absolute;
+    top: 368px;
+    left: calc(15vw + 180px);;
+    z-index: 1;
+}
+
+#soundRange, #musicRange, #soundRangeS, #musicRangeS {
+    background-color: rgba(56, 32, 32, 0.404);
+    height: 3px;
+    width: calc(25px + 8vw);
+    position: absolute;
+    top: 8.5px;
+}
+
+.sliderKnob {
+    background-color: rgb(255, 255, 255);
+    height: 20px;
+    width: 8px;
+    position: absolute;
+    left: calc(35px + 10vw - 4px);
+}
+
+#musicToggle, #soundToggle {
+    font-size: 16px;
+    margin-left: calc(12vw);
 }

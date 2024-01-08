@@ -98,6 +98,18 @@
                 <p>exit pong ?</p>
                 <p style="margin-top: 60px;"><span id="exitY" class="pongButton">(Y) yes</span> &nbsp; <span id="exitN" class="pongButton">(N) no</span></p>
             </div>
+            <div id="pongSPPrompt" class="menuPong hidden">
+                <p>back to difficulty selection ?</p>
+                <p style="margin-top: 60px;"><span id="difficultyY" class="pongButton">(Y) yes</span> &nbsp; <span id="difficultyN" class="pongButton">(N) no</span></p>
+            </div>
+            <div id="pongMPPrompt" class="menuPong hidden">
+                <p>back to speed selection ?</p>
+                <p style="margin-top: 60px;"><span id="speedY" class="pongButton">(Y) yes</span> &nbsp; <span id="speedN" class="pongButton">(N) no</span></p>
+            </div>
+            <div id="backToMenuPrompt" class="menuPong hidden">
+                <p>back to main menu ?</p>
+                <p style="margin-top: 60px;"><span id="mainMenuY" class="pongButton">(Y) yes</span> &nbsp; <span id="mainMenuN" class="pongButton">(N) no</span></p>
+            </div>
 
             <div id="pongMenu" class="menuPong hidden">
                 <h2 class="pongTitle"><span class="flashing">></span> play pong</h2>
@@ -121,20 +133,39 @@
             <div id="pongSettings" class="menuPong hidden">
                 <h2 class="pongTitle"><span class="flashing">></span> settings</h2>
                 <p id="bindings" class="pongButton">(1) bindings</p>
-                <p id="musicToggle" class="pongButton">(2) music: <span id="pongMusic">on</span></p>
-                <p id="soundToggle" class="pongButton">(3) sound: <span id="pongSound">on</span></p>
+                <p><span id="musicToggle" class="pongButton">music:</span> <span id="pongMusicS">100</span></p>
+                <p><span id="soundToggle" class="pongButton">sound:</span> <span id="pongSoundS">100</span></p>
             </div>
             <div id="pausedScreen" class="pausedPong hidden">
                 <img id="pongRestartIcon" src="img/pong/play.png" alt="Continue Pong Button" width="100">
                 <img id="pongResumeIcon" src="img/pong/restart.png" alt="Restart Pong Button" width="100">
                 <h2 id="pongPausedTitle" class="pongTitle"><span class="flashing">></span> paused</h2>
                 <p id="bindingsP" class="pongButton">(1) bindings</p>
-                <p id="musicToggleP" class="pongButton">(2) music: <span id="pongMusic">100</span></p>
-                <p id="soundToggleP" class="pongButton">(3) sound: <span id="pongSound">100</span></p>
-                <p id="exitP" class="pongButton">(4) back to menu</span></p>
+                <p> <span id="musicToggleP" class="pongButton">music:</span> <span id="pongMusic">100</span></p>
+                <p><span id="soundToggleP" class="pongButton">sound:</span> <span id="pongSound">100</span></p>
+                <p id="exitP" class="pongButton">(2) back to menu</p>
             </div>
+
+            <div id="musicSlider" class="hidden">
+                <div id="musicRange" class="barRange"></div>
+                <div id="musicKnob" class="sliderKnob"></div>
+            </div>
+            <div id="soundSlider" class="hidden">
+                <div id="soundRange" class="barRange"></div>
+                <div id="soundKnob" class="sliderKnob"></div>
+            </div>
+
+            <div id="musicSliderS" class="hidden">
+                <div id="musicRangeS" class="barRange"></div>
+                <div id="musicKnobS" class="sliderKnob"></div>
+            </div>
+            <div id="soundSliderS" class="hidden">
+                <div id="soundRangeS" class="barRange"></div>
+                <div id="soundKnobS" class="sliderKnob"></div>
+            </div>
+            
+            <canvas id="pongGame" height="600" width="600" class="hidden"></canvas>
         </div>
-        <canvas id="pongGame" height="600" width="600"></canvas>
     </section>
 
 <!-- ======================= CUP PONG STUFF ======================= -->
