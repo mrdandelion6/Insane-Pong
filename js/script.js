@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
         x: 0, // calc x in drawSlider()
         speed: 6,
         velocityY: 0,
-        dash: false
+        dash: false,
+        held: false
     }
     let slider2 = {
         width: 10,
@@ -136,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
         x: 10,
         speed: 6,
         velocityY: 0,
-        dash: false
+        dash: false,
+        held: false
     }
     let ball = {
         exists: false,
@@ -861,7 +863,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        draggingID = setInterval(()=> {
+        draggingID = setInterval(() => {
             let sliderReference = musicSlider.getBoundingClientRect(); // both sliders will have same x and width, doesnt matter which we take
             let sliderReference2 = musicSliderS.getBoundingClientRect(); // both sliders will have same x and width, doesnt matter which we take
             let horizontalPos = (MTPosition.x - sliderReference.left - 4);
@@ -896,9 +898,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 soundKnobS.style.left = horizontalPos2 + "px";
                 soundVol = 100 * (horizontalPos2 + 4) / sliderReference2.width;
             }
-
+    
             updateVolumeTextValues();
-            
         }, 10);
     }
 
@@ -907,6 +908,8 @@ document.addEventListener('DOMContentLoaded', function () {
             clearInterval(draggingID);
         }
         draggingID = null;
+        slider1.held = false;
+        slider2.held = false;
     }
     // ============ VOLUME SLIDERS ============
 
@@ -920,13 +923,66 @@ document.addEventListener('DOMContentLoaded', function () {
         let y = MTPosition.y - rectCanvas.top;
 
         if (insideSlider1(x, y)) {
-            console.log("you clicked slider 1"); 
+            console.log("you clicked slider 1");
+            slider1.held = true;
+            startDraggingPong("slider1");
         }
-
-        // TODO FOR TOMORROW: IMPLEMENT SLIDER MOVEMENT
 
         else if (insideSlider2(x, y)) {
             console.log("you clicked slider 2");
+            slider2.held = true;
+            startDraggingPong("slider2");
+        }
+
+        function startDraggingPong(type) {
+            let velID = null;
+            draggingID = setInterval(() => {
+                let currY = MTPosition.y - rectCanvas.top;
+                let bddY = Math.min(Math.max(slider1.height / 2, currY), 600 - slider1.height / 2); // using slider1's height but we expect both sliders to have same height
+                if (type == "slider1") {    
+                    if (slider1.y < bddY - slider1.height / 2) { // going down
+                        slider1.velocityY = slider1.speed;
+                        if (velID != null) {
+                            clearTimeout(velID);
+                            velID = null;
+                        }
+                        velID = setTimeout(() => slider1.velocityY = 0, 50);
+                    }
+                    else if (slider1.y > bddY - slider1.height / 2) { // going up
+                        slider1.velocityY = -slider1.speed;
+                        if (velID != null) {
+                            clearTimeout(velID);
+                            velID = null;
+                        }
+                        veclID = setTimeout(() => slider1.velocityY = 0, 50);
+                    }
+                                                                    // if we expect sliders to have distinct heights, expand this calculation into the if statements
+                    slider1.y = bddY - slider1.height / 2; // set the center to the cursor
+                }
+                else if (type == "slider2") {
+                    if (slider2.y < bddY - slider2.height / 2) { // going down
+                        slider2.velocityY = slider2.speed;
+                        if (velID != null) {
+                            clearTimeout(velID);
+                            velID = null;
+                        }
+                        velID = setTimeout(() => slider2.velocityY = 0, 50);
+                    }
+                    else if (slider2.y > bddY - slider2.height / 2) { // going up
+                        slider2.velocityY = -slider2.speed;
+                        if (velID != null) {
+                            clearTimeout(velID);
+                            velID = null;
+                        }
+                        veclID = setTimeout(() => slider2.velocityY = 0, 50);
+                    }
+                    slider2.y = bddY - slider2.height / 2;
+                }
+                else {
+                    console.log("ERROR, WRONG TYPE TO DRAG");
+                }
+
+            }, 10);
         }
 
         function insideSlider1(x, y) {
@@ -1188,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     slider1.velocityY = 3 * slider1.speed;
                 }
             }
-            else {
+            else if (!slider1.held) {
                 slider1.velocityY = 0;
             }
 
@@ -1205,7 +1261,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         slider2.velocityY = 3 * slider2.speed;
                     }
                 }
-                else {
+                else if (!slider2.held) {
                     slider2.velocityY = 0;
                 }
             } 
@@ -1238,8 +1294,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            slider1.y += slider1.velocityY;
-            slider2.y += slider2.velocityY;
+            if (!slider1.held) {
+                slider1.y += slider1.velocityY;
+            }
+            if (!slider2.held) {
+                slider2.y += slider2.velocityY;
+            }
         }
 
         function drawBall() {
