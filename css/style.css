@@ -30,7 +30,7 @@ a {
     position: fixed;
     width: 100vw;
     justify-content: flex-end;
-    z-index: 3;
+    z-index: 4;
 }
 
 #popmenu {
@@ -511,7 +511,7 @@ footer {
 }
 
 #pongExitPrompt, #pongSPPrompt, #pongMPPrompt, #backToMenuPrompt, #restartPrompt {
-    z-index: 2;
+    z-index: 3;
     margin: 0;
     height: 300px;
     width: calc(max(400px, 16vw));
@@ -569,4 +569,30 @@ footer {
 .volumePar {
     margin-left: calc(12vw) !important;
     margin-right: 0;
+}
+
+#playerTwoScore {
+    position: absolute;
+    /* top: 190px;
+    left: calc(20% - 16px); */
+    top: 60px;
+    left: calc(50% - 60px);
+    z-index: 2;
+    margin: 0;
+    font-size: 35px;
+}
+
+#playerOneScore {
+    position: absolute;
+    /* top: 190px;
+    left: calc(80% - 16px); */
+    top: 60px;
+    left: calc(50% + 40px);
+    z-index: 2;
+    margin: 0;
+    font-size: 35px;
+}
+
+.endTitle {
+    margin-bottom: 140px !important;
 }

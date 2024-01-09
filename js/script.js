@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var pauseMenu = document.querySelector("#pausedScreen");
     var gameCanvas = document.querySelector("#pongGame");
     var ctx = gameCanvas.getContext("2d");
+    var spLoseScreen = document.querySelector("#spLoseScreen");
+    var spWinScreen = document.querySelector("#spWinScreen");
+    var mpEndScreen = document.querySelector("#mpEndScreen");
     // popups
     var pongExitPopup = document.querySelector("#pongExitPrompt"); 
     var pongBackToSPPopup = document.querySelector("#pongSPPrompt"); 
@@ -65,7 +68,19 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastScreen;
     let extraScreen;
 
+    // pong player numbers
+    var winnerNumber = document.querySelector("#winnerNum"); // displayed for MP game end
+    var playerOneScoreDisplay = document.querySelector("#playerOneScore");
+    var playerTwoScoreDisplay = document.querySelector("#playerTwoScore");
+
     // pong text buttons
+    var spPlayAgainW = document.querySelector("#SPplayAgainW");
+    var spPlayAgainL = document.querySelector("#SPplayAgainL");
+    var mpPlayAgain = document.querySelector("#MPplayAgain");
+    var spBackMenuL = document.querySelector("#SPbackMenuL");
+    var spBackMenuW = document.querySelector("#SPbackMenuW");
+    var mpBackMenu = document.querySelector("#MPbackMenu");
+
     var confirmExit = document.querySelector("#exitY"); // exit popup
     var rejectExit = document.querySelector("#exitN");
 
@@ -244,8 +259,6 @@ document.addEventListener('DOMContentLoaded', function () {
         soundKnob.style.left = hPos2 + "px";
         musicKnobS.style.left = h2Pos1 + "px";
         soundKnobS.style.left = h2Pos2 + "px";
-        console.log(`sound volume is ${soundVol}`);
-        console.log(`sliderReferenceWidth is ${sliderReference.width}`);
     }
 
     // RESIZING EVENT
@@ -310,9 +323,15 @@ document.addEventListener('DOMContentLoaded', function () {
     rejectRestart.addEventListener("click", cancelRestart);
 
     function restartPong() {
-        restartPopup.classList.toggle("hidden");
-        pauseMenu.classList.toggle("hidden");
-        lastScreen = pauseMenu;
+        if (!restartPopup.classList.contains("hidden")) {
+            restartPopup.classList.toggle("hidden");
+            currentScreen = lastScreen; // sets pauseMenu to currentScreen if we had a popup
+            gameCanvas.classList.toggle("hidden"); // toggle it twice for pause menu
+        }
+
+        currentScreen.classList.toggle("hidden");
+        gameCanvas.classList.toggle("hidden");
+        lastScreen = currentScreen;
         currentScreen  = gameCanvas;
 
         let tempDiff = difficulty;
@@ -333,16 +352,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // exit button
     exitButton.addEventListener("click", () => {
-        pongExitPopup.classList.toggle("hidden");
-        extraScreen = currentScreen;
-        currentScreen = pongExitPopup; // dont set last screen
+        if (currentScreen != pongExitPopup) {
+            pongExitPopup.classList.toggle("hidden");
+            extraScreen = currentScreen;
+            currentScreen = pongExitPopup; // dont set last screen
+    
+            if (playingPong && !pongIsPaused) {
+                pongIsPaused = true;
+                if (resumingID != null) {
+                    clearTimeout(resumingID);
+                }
+                freezeGame();
+            }
+        }
     });
 
     confirmExit.addEventListener("click", exitPong);
     rejectExit.addEventListener("click", cancelExit);
 
     function cancelExit() {
-        pongExitPopup.classList.toggle("hidden")
+        pongExitPopup.classList.toggle("hidden");
+        if (extraScreen == gameCanvas) {
+            resumeGame();
+        }
         currentScreen = extraScreen;
     }
 
@@ -351,10 +383,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function confirmSPexit() {
         endGame();
         hideVolumeBars();
-        if (lastScreen == pauseMenu) {
-            pauseMenu.classList.toggle("hidden");
+        hideScores();
+        lastScreen.classList.toggle("hidden"); // hides pause menu, game end menu, and game canvas possibly
+        if (!gameCanvas.classList.contains("hidden")) {
+            gameCanvas.classList.toggle("hidden");
         }
-        gameCanvas.classList.toggle("hidden");
         currentScreen.classList.toggle("hidden");  // popup is curr screen
         singlePlayerMenu.classList.toggle("hidden");
         lastScreen = currentScreen;
@@ -375,11 +408,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function confirmMPexit() {
         endGame();
         hideVolumeBars();
-        if (lastScreen == pauseMenu) {
-            pauseMenu.classList.toggle("hidden");
+        hideScores();
+        lastScreen.classList.toggle("hidden"); 
+        if (!gameCanvas.classList.contains("hidden")) {
+            gameCanvas.classList.toggle("hidden");
         }
-        gameCanvas.classList.toggle("hidden");
-        currentScreen.classList.toggle("hidden");  // popup is curr screen
+        currentScreen.classList.toggle("hidden");
         multiplayerMenu.classList.toggle("hidden");
         lastScreen = currentScreen;
         currentScreen = multiplayerMenu;
@@ -394,9 +428,16 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = lastScreen;
     }
 
+    // game end popups
+    spBackMenuL.addEventListener("click", popupExit);
+    spBackMenuW.addEventListener("click", popupExit);
+    mpBackMenu.addEventListener("click", popupExit);
+    spPlayAgainL.addEventListener("click", restartPong);
+    spPlayAgainW.addEventListener("click", restartPong);
+    mpPlayAgain.addEventListener("click", restartPong);
     // main menu popups
-    exitButtonP.addEventListener("click", popupExitPaused);
-    function popupExitPaused() {
+    exitButtonP.addEventListener("click", popupExit);
+    function popupExit() {
         if (pongBackToMainMenuPopup.classList.contains("hidden")) {
             pongBackToMainMenuPopup.classList.toggle("hidden");
             lastScreen = currentScreen;
@@ -407,21 +448,26 @@ document.addEventListener('DOMContentLoaded', function () {
     confirmBackMM.addEventListener("click", confirmMMexit);
     function confirmMMexit() {
         hideVolumeBars();
+        hideScores();
         currentScreen.classList.toggle("hidden");
-        pauseMenu.classList.toggle("hidden");
-        gameCanvas.classList.toggle("hidden");
+        lastScreen.classList.toggle("hidden");
+        if (lastScreen == pauseMenu) {
+            gameCanvas.classList.toggle("hidden");
+        }
         endGame();
         mainMenu.classList.toggle("hidden");
         lastScreen = currentScreen;
         currentScreen = mainMenu;
         backButton.classList.toggle("hidden");
+        hideScores();
     }
 
     rejectBackMM.addEventListener("click", rejectMMexit);
     function rejectMMexit() {
         pongBackToMainMenuPopup.classList.toggle("hidden");
-        lastScreen = currentScreen
-        currentScreen = pauseMenu;
+        let tempScreen = lastScreen;
+        lastScreen = currentScreen;
+        currentScreen = tempScreen;
     }
 
     // volume button
@@ -439,6 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (currentScreen == gameCanvas) { // esc during game
                 pauseGame();
                 showVolumeBars();
+                hideScores();
             }
 
             else if (currentScreen == pauseMenu) { // esc during pause
@@ -447,6 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 lastScreen = currentScreen;
                 currentScreen = gameCanvas;
                 hideVolumeBars();
+                showScoreGame();
             }
 
             else {
@@ -459,6 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentScreen = settingsMenu;
                 setTimeout(adjustVolumeMusicSliderPositions, 1);
                 showVolumeBars2();
+                hideScores();
             }
         }
     }
@@ -466,22 +515,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // back button 
     backButton.addEventListener("click", goBack);
     function goBack() {
-        switch(true) {
-            case currentScreen == settingsMenu:
+        switch(currentScreen) {
+            case settingsMenu:
                 currentScreen.classList.toggle("hidden");
                 lastScreen.classList.toggle("hidden");
                 currentScreen = lastScreen;
                 lastScreen = settingsMenu;
                 hideVolumeBars2();
+                if (lastScreen == mpEndScreen || spLoseScreen || spWinScreen) {
+                    showScoreEnd();
+                }
                 break;
 
-            case currentScreen == singlePlayerMenu || currentScreen == multiplayerMenu:
+            case singlePlayerMenu:
+            case multiplayerMenu:
                 currentScreen.classList.toggle("hidden");
                 mainMenu.classList.toggle("hidden");
                 lastScreen = currentScreen;
                 currentScreen = mainMenu;
                 break;
-            case currentScreen == gameCanvas || currentScreen == pauseMenu:
+
+            case gameCanvas: 
+            case pauseMenu:
+            case mpEndScreen:
+            case spLoseScreen: 
+            case spWinScreen:
                 if (playingPong === 1) {
                     lastScreen = currentScreen;
                     currentScreen = pongBackToSPPopup;
@@ -495,6 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     console.log(`ERROR, NOT PLAYING PONG?`);
                 }
+                break;
         }
 
         if (currentScreen == mainMenu) {
@@ -718,7 +777,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         startMultiplayer();
                         break;
                     case pauseMenu:
-                        popupExitPaused();
+                        popupExit();
                         break;
                     default:
                         break;
@@ -1050,8 +1109,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============= PONG GAME =============
     function initializeGame() {
         ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
+        showScoreGame();
 
-        if (difficulty === 1) {
+        if (playingPong === 1) {
             slider2.speed = assignCpu();
         }
 
@@ -1215,22 +1275,86 @@ document.addEventListener('DOMContentLoaded', function () {
         dashWindowID2 = null;
         trailCD = false;
 
+        resumingID = null;
+        currentCD = null;
         difficulty = null;
         playingPong = 0;
+        pongIsPaused = false;
     }
 
     function exitPong() {
         if (playingPong) {
             endGame();
         }
-        pongPreview.classList.toggle("hidden");
-        pong.classList.toggle("hidden");
-        currentScreen.classList.toggle("hidden");
-        pongExitPopup.classList.toggle("hidden");
+        hideVolumeBars();
+        hideScores();
+        hideAllScreens();
+        hideAllPopups();
+        backButton.classList.toggle("hidden");
+
         lastScreen = null;
         currentScreen = null;
+        pong.classList.toggle("hidden");
         pongIsOpen = false;
-        hideVolumeBars();
+
+        pongPreview.classList.toggle("hidden");
+    }
+
+    function hideAllScreens() {
+        if (currentScreen !== null) {
+            if (!currentScreen.classList.contains("hidden")) {
+                currentScreen.classList.toggle("hidden");
+            }
+        }
+        if (lastScreen !== null) {
+            if (!lastScreen.classList.contains("hidden")) {
+                lastScreen.classList.toggle("hidden");
+            }
+        }
+        if (!gameCanvas.classList.contains("hidden")) {
+            gameCanvas.classList.toggle("hidden");
+        }
+        if (!pauseMenu.classList.contains("hidden")) {
+            pauseMenu.classList.toggle("hidden");
+        }
+        if (!mainMenu.classList.contains("hidden")) {
+            mainMenu.classList.toggle("hidden");
+        }
+        if (!singlePlayerMenu.classList.contains("hidden")) {
+            singlePlayerMenu.classList.toggle("hidden");
+        }
+        if (!multiplayerMenu.classList.contains("hidden")) {
+            multiplayerMenu.classList.toggle("hidden");
+        }
+        if (!mpEndScreen.classList.contains("hidden")) {
+            mpEndScreen.classList.toggle("hidden");
+        }
+        if (!spWinScreen.classList.contains("hidden")) {
+            spWinScreen.classList.toggle("hidden");
+        }
+        if (!spLoseScreen.classList.contains("hidden")) {
+            spLoseScreen.classList.toggle("hidden");
+        }
+        // TODO: ADD BINDINGS SCREEN
+
+    }
+
+    function hideAllPopups() {
+        if (!restartPopup.classList.contains("hidden")) {
+            restartPopup.classList.toggle("hidden");
+        }
+        if (!pongExitPopup.classList.contains("hidden")) {
+            pongExitPopup.classList.toggle("hidden");
+        }
+        if (!pongBackToSPPopup.classList.contains("hidden")) {
+            pongBackToSPPopup.classList.toggle("hidden");
+        }
+        if (!pongBackToMPPopup.classList.contains("hidden")) {
+            pongBackToMPPopup.classList.toggle("hidden");
+        }
+        if (!pongBackToMainMenuPopup.classList.contains("hidden")) {
+            pongBackToMainMenuPopup.classList.toggle("hidden");
+        }
     }
 
 
@@ -1507,6 +1631,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 playerOneScore ++;
                 ball.onFire = false;
                 ball.exists = false;
+                showScoreGame();
                 checkWin();
             }
 
@@ -1514,12 +1639,91 @@ document.addEventListener('DOMContentLoaded', function () {
                 playerTwoScore ++;
                 ball.onFire = false;
                 ball.exists = false;
+                showScoreGame();
                 checkWin();
             }
 
             function checkWin(){
+                let player1Wins = playerOneScore === 10;
+                let player2Wins = playerTwoScore === 10;
 
+                if (!player1Wins && !player2Wins) { // no one has won
+                    return;
+                }
+
+                // if we get here then someone has won
+                gameCanvas.classList.toggle("hidden");
+                showScoreEnd();
+                
+                if (playingPong === 1) {
+                    if (player1Wins) { // user wins
+                        spWinScreen.classList.toggle("hidden");
+                        lastScreen = currentScreen;
+                        currentScreen = spWinScreen;
+                    }
+
+                    else if (player2Wins) { // user loses (computer wins)
+                        spLoseScreen.classList.toggle("hidden");
+                        lastScreen = currentScreen;
+                        currentScreen = spLoseScreen;
+                    }
+                }
+
+                else if (playingPong === 2) {
+                    if (player1Wins) { // player 1 wins
+                        winnerNumber.innerHTML = 1;
+                    }
+                    else if (player2Wins) { // player 2 wins
+                        winnerNumber.innerHTML = 2;
+                    }
+                    mpEndScreen.classList.toggle("hidden");
+                    lastScreen = currentScreen;
+                    currentScreen = mpEndScreen;
+                }
+
+                freezeGame(); // dont endgame yet
             }
+        }
+    }
+
+    function hideScores() {
+        if (!playerOneScoreDisplay.classList.contains("hidden")) {
+            playerOneScoreDisplay.classList.toggle("hidden");
+        }
+        if (!playerTwoScoreDisplay.classList.contains("hidden")) {
+            playerTwoScoreDisplay.classList.toggle("hidden");
+        }
+    }
+
+    function showScoreGame() {
+        playerOneScoreDisplay.innerHTML = playerOneScore;
+        playerTwoScoreDisplay.innerHTML = playerTwoScore;
+        playerOneScoreDisplay.style.left = "calc(50% + 40px)";
+        playerOneScoreDisplay.style.top = "60px";
+        playerTwoScoreDisplay.style.left = "calc(50% - 60px)";
+        playerTwoScoreDisplay.style.top = "60px";
+
+        if (playerOneScoreDisplay.classList.contains("hidden")) {
+            playerOneScoreDisplay.classList.toggle("hidden");
+        }
+        if (playerTwoScoreDisplay.classList.contains("hidden")) {
+            playerTwoScoreDisplay.classList.toggle("hidden");
+        }
+    }
+
+    function showScoreEnd() {
+        playerOneScoreDisplay.innerHTML = playerOneScore;
+        playerTwoScoreDisplay.innerHTML = playerTwoScore;
+        playerOneScoreDisplay.style.left = "calc(80% - 16px)";
+        playerOneScoreDisplay.style.top = "190px";
+        playerTwoScoreDisplay.style.left = "calc(20% - 16px)";
+        playerTwoScoreDisplay.style.top = "190px";
+
+        if (playerOneScoreDisplay.classList.contains("hidden")) {
+            playerOneScoreDisplay.classList.toggle("hidden");
+        }
+        if (playerTwoScoreDisplay.classList.contains("hidden")) {
+            playerTwoScoreDisplay.classList.toggle("hidden");
         }
     }
     // ============= PONG GAME =============

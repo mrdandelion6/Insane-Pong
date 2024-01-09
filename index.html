@@ -115,10 +115,27 @@
                 <p style="margin-top: 60px;"><span id="restartY" class="pongButton">(Y) yes</span> &nbsp; <span id="restartN" class="pongButton">(N) no</span></p>
             </div>
 
+            <p id="playerOneScore" class="hidden">1</p>
+            <p id="playerTwoScore" class="hidden">2</p>
             <div id="pongMenu" class="menuPong hidden">
                 <h2 class="pongTitle"><span class="flashing">></span> play pong</h2>
                 <p id="chooseSP" class="pongButton">(1) one player</p>
                 <p id="chooseMP" class="pongButton">(2) two players</p>
+            </div>
+            <div id="spLoseScreen" class="menuPong hidden">
+                <h2 class="pongTitle endTitle"><span class="flashing">></span> you lost!</h2>
+                <p id="SPplayAgainL" class="pongButton">(1) play again</p>
+                <p id="SPbackMenuL" class="pongButton">(2) back to menu</p>
+            </div>
+            <div id="spWinScreen" class="menuPong hidden">
+                <h2 class="pongTitle endTitle"><span class="flashing">></span> you won!</h2>
+                <p id="SPplayAgainW" class="pongButton">(1) play again</p>
+                <p id="SPbackMenuW" class="pongButton">(2) back to menu</p>
+            </div>
+            <div id="mpEndScreen" class="menuPong hidden">
+                <h2 class="pongTitle endTitle"><span class="flashing">></span> player <span id="winnerNum">x</span> won!</h2>
+                <p id="MPplayAgain" class="pongButton">(1) play again</p>
+                <p id="MPbackMenu" class="pongButton">(2) back to menu</p>
             </div>
             <div id="singleMenu" class="menuPong hidden">
                 <h2 class="pongTitle"><span class="flashing">></span> difficulty</h2>
