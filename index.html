@@ -94,6 +94,30 @@
             <img id="pongExitIcon" src="img/pong/exit.png" alt="Pong Exit Icon" width="55" class="pongButton" draggable="false" ondragstart="return false;">
             <img id="pongBackIcon" src="img/pong/back.png" alt="Pong Back Icon" width="40" class="pongButton hidden" draggable="false" ondragstart="return false;">
 
+            <!-- p1 controls -->
+            <div class="hidden onCanvasContainer" id="p1Up">
+                <!-- <img id="p1ArrowUp" src="" alt="arrow"> -->
+                <img class="onCanvasArrow" id="p1upArrow" src="img/pong/arrow.png" alt="arrow" width="40">
+                <p class="onCanvasBindText" id="p1upBind">x</p>
+            </div>
+            <div class="hidden onCanvasContainer" id="p1Down">
+                <!-- <img id="p1DownUp" src="" alt="arrow"> -->
+                <img class="onCanvasArrow downArrow" id="p1downArrow" src="img/pong/arrow.png" alt="arrow" width="40">
+                <p class="onCanvasBindText" id="p1downBind">x</p>
+            </div>
+
+            <!-- p2 controls -->
+            <div class="hidden onCanvasContainer" id="p2Up">
+                <!-- <img id="p1ArrowUp" src="" alt="arrow"> -->
+                <img class="onCanvasArrow" id="p2upArrow" src="img/pong/arrow.png" alt="arrow" width="40">
+                <p class="onCanvasBindText" id="p2upBind">y</p>
+            </div>
+            <div class="hidden onCanvasContainer" id="p2Down">
+                <!-- <img id="p1DownUp" src="" alt="arrow"> -->
+                <img class="onCanvasArrow downArrow" id="p2downArrow" src="img/pong/arrow.png" alt="arrow" width="40">
+                <p class="onCanvasBindText" id="p2downBind">y</p>
+            </div>
+
             <div id="pongExitPrompt" class="menuPong hidden">
                 <p>exit pong ?</p>
                 <p style="margin-top: 60px;"><span id="exitY" class="pongButton">(Y) yes</span> &nbsp; <span id="exitN" class="pongButton">(N) no</span></p>

@@ -596,3 +596,49 @@ footer {
 .endTitle {
     margin-bottom: 140px !important;
 }
+
+.downArrow {
+    transform: rotate(180deg);
+}
+
+.onCanvasArrow {
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+.onCanvasBindText {
+    color: black;
+    font-size: 16px;
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    margin: 0;
+}
+
+.onCanvasContainer {
+    position: absolute;
+    z-index: 2;
+    cursor: pointer;
+}
+
+#p2Up {
+    top: 110px;
+    left: 10%;
+}
+#p2Down {
+    top: 500px;
+    left: 10%;
+}
+#p1Up {
+    top: 110px;
+    left: calc(90% - 40px);
+}
+#p1Down {
+    top: 500px;
+    left: calc(90% - 40px);
+}
+
+
