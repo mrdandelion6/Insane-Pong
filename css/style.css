@@ -337,7 +337,7 @@ footer {
     width: 5px;
     background-color: whitesmoke;
     position: relative;
-    margin-left: 3vw;
+    margin-left: 55px;
     margin-right: 12vw;
 }
 
@@ -520,8 +520,12 @@ footer {
     position: absolute;
 }
 
+#arrowCupTitle {
+    padding: 20px 0px 20px 0px;
+}
+
 #cupTitle {
-    margin-left: 12vw;
+    margin-left: 15px;
     margin-right: 0;
     padding: 20px 25px 20px 0px;
 }

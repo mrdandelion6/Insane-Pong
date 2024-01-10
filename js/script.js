@@ -2042,8 +2042,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let goingLeft = false; 
 
             return setInterval(() => {
-                let vw = window.innerWidth;
-                s = (0.03 * vw) / 118;
+                s = 55 / 118;
 
                 if (x <= 0) {
                     goingLeft = false;
@@ -2051,7 +2050,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
 
-                else if (x >= (0.03 * vw)) {
+                else if (x >= 55) {
                     goingLeft = true;
                     x -= s;
                 }
@@ -2061,7 +2060,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 else {
-                    x += (0.03 * vw) / 118;
+                    x += 55 / 118;
                 }
                 
                 ball.style.left = x + "px";
@@ -2071,7 +2070,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function ballYAnimation() {
             let y = 32;
             let goingUp = false;
-            let s = 2 ;
+            let s = 2;
 
             return setInterval(() => {
                 
