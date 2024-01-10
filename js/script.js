@@ -333,6 +333,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============ PONG BUTTONS ============
 
+    // prevent sliding on touch screen
+    
+    gameCanvas.addEventListener("touchmove", (event) => event.preventDefault());
+    up1Button.addEventListener("touchmove", (event) => event.preventDefault());
+    down1Button.addEventListener("touchmove", (event) => event.preventDefault());
+    up2Button.addEventListener("touchmove", (event) => event.preventDefault());
+    down2Button.addEventListener("touchmove", (event) => event.preventDefault());
+    settingsButton.addEventListener("touchmove", (event) => event.preventDefault());
+    exitButton.addEventListener("touchmove", (event) => event.preventDefault());
+    volumeButton.addEventListener("touchmove", (event) => event.preventDefault());
+    backButton.addEventListener("touchmove", (event) => event.preventDefault());
+    eyeButton.addEventListener("touchmove", (event) => event.preventDefault());
+    volumeCross.addEventListener("touchmove", (event) => event.preventDefault());
+    eyeCross.addEventListener("touchmove", (event) => event.preventDefault());
+
+
     // resume button
     resumeButton.addEventListener("click", () => {
         currentScreen.classList.toggle("hidden");
@@ -1183,7 +1199,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============ PONG SLIDERS ============
     gameCanvas.addEventListener("mousedown", dragSlider);
     gameCanvas.addEventListener("touchstart", dragSlider);
-    gameCanvas.addEventListener("touchmove", (event) => event.preventDefault());
 
     function dragSlider() {
         let rectCanvas = gameCanvas.getBoundingClientRect();
