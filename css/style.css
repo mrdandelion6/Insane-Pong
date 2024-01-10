@@ -89,7 +89,7 @@ a {
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    margin-right: calc(200px - 16vw);
+    margin-right: 12vw;
     cursor: pointer;
 }
 
@@ -184,7 +184,9 @@ a {
 }
 
 #pre-intro p {
-    margin: 0px 100px;
+    margin-left: 12vw;
+    margin-right: 12vw;
+    text-align: left;
 }
 
 p {
@@ -252,7 +254,8 @@ h3 {
 }
 
 .small-message {
-    margin-left: 135px;
+    margin-left: 12vw;
+    margin-right: 12vw;
     margin-top: 20px;
     text-align: left;
     font-size: medium;
@@ -326,7 +329,6 @@ footer {
     width: 5px;
     background-color: whitesmoke;
     position: relative;
-    margin-left: 2vw;
 }
 
 #isliderTwo{
@@ -335,6 +337,7 @@ footer {
     background-color: whitesmoke;
     position: relative;
     margin-left: 3vw;
+    margin-right: 12vw;
 }
 
 #iball {
@@ -516,7 +519,8 @@ footer {
 }
 
 #cupTitle {
-    margin: 0;
+    margin-left: 12vw;
+    margin-right: 0;
     padding: 20px 25px 20px 0px;
 }
 
