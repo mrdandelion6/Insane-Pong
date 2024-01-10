@@ -89,7 +89,7 @@ a {
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    margin-right: 12vw;
+    margin-right: calc(200px - 16vw);
     cursor: pointer;
 }
 
