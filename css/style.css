@@ -429,6 +429,20 @@ footer {
     z-index: 2;
 }
 
+#pongVisibleIcon {
+    position: absolute;
+    top: 55px;
+    left: 29px;
+    z-index: 2;
+}
+
+#pongVisibleCross {
+    position: absolute;
+    top: 50px;
+    left: 22px;
+    z-index: 2;
+}
+
 #pongExitIcon {
     position: absolute;
     top: 583px;
@@ -641,4 +655,44 @@ footer {
     left: calc(90% - 40px);
 }
 
+.skinnyArrow {
+    position: absolute;
+    z-index: 3;
+    left: 5.5px;
+    top: 10px;
+}
 
+.skinnyArrow.downArrow {
+    left: 5px;
+}
+
+#hideBindsPrompt {
+    z-index: 3;
+    margin: 0;
+    height: 70px;
+    width: calc(max(200px, 8vw));
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top:10px;
+    left: calc(40px + 7%);
+}
+
+#showBindsPrompt {
+    z-index: 3;
+    margin: 0;
+    height: 70px;
+    width: calc(max(200px, 8vw));
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top:10px;
+    left: calc(40px + 7%);
+}
+
+#hideBindsPrompt p, #showBindsPrompt p {
+    margin: 0;
+    font-size: 12px;
+}

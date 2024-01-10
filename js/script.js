@@ -12,31 +12,58 @@ document.addEventListener('DOMContentLoaded', function () {
     var pongPreview = document.querySelector("#pongPreview");
     var pongPreviewButton = document.querySelector("#cupTitle");
     
-    // pong tray buttons
+    // pong main buttons
     var settingsButton = document.querySelector("#pongSettingsIcon");
     var volumeButton = document.querySelector("#pongVolumeIcon");
     var volumeCross = document.querySelector("#pongVolumeCross");
+    var eyeButton = document.querySelector("#pongVisibleIcon");
+    var eyeCross = document.querySelector("#pongVisibleCross");
     var backButton = document.querySelector("#pongBackIcon");
     var exitButton = document.querySelector("#pongExitIcon");
-    var resumeButton = document.querySelector("#pongResumeIcon");
+    var resumeButton = document.querySelector("#pongResumeIcon"); // pause screen
     var restartButton = document.querySelector("#pongRestartIcon");
 
-    // pong slider buttons
-    var musicAdjust = document.querySelector("#musicSlider")
+    // pong bind buttons
+    var up1Button = document.querySelector("#p1Up"); // up1
+    var up1Bind = document.querySelector("#p1upBind");
+    var arrowUp1 = document.querySelector("#p1upSkinny");
+
+    var down1Button = document.querySelector("#p1Down"); // down1
+    var down1Bind = document.querySelector("#p1downBind");
+    var arrowDown1 = document.querySelector("#p1downSkinny");
+
+    var up2Button = document.querySelector("#p2Up"); // up2
+    var up2Bind = document.querySelector("#p2upBind");
+    var arrowUp2 = document.querySelector("#p2upSkinny");
+
+    var down2Button = document.querySelector("#p2Down"); // down2
+    var down2Bind = document.querySelector("#p2downBind");
+    var arrowDown2 = document.querySelector("#p2downSkinny");
+
+    // pong exit constants (they save even after exiting pong)
+    var up1 = "ArrowUp";
+    var down1 = "ArrowDown";
+    var up2 = "w";
+    var down2 = "s";
+    var musicVol = 100;
+    var soundVol = 100;
+    var bindsShowing = true;
+    var volumeOn = true;
+
+    // pong volume buttons
+    var musicAdjust = document.querySelector("#musicSlider");
     var musicKnob = document.querySelector("#musicKnob");
     var musicSlider = document.querySelector("#musicRange");
-    var musicAdjustS = document.querySelector("#musicSliderS")
+    var musicAdjustS = document.querySelector("#musicSliderS");
     var musicKnobS = document.querySelector("#musicKnobS");
     var musicSliderS = document.querySelector("#musicRangeS");
-    var musicVol = 100;
 
-    var soundAdjust = document.querySelector("#soundSlider")
+    var soundAdjust = document.querySelector("#soundSlider");
     var soundKnob = document.querySelector("#soundKnob");
     var soundSlider = document.querySelector("#soundRange");
     var soundAdjustS = document.querySelector("#soundSliderS")
     var soundKnobS = document.querySelector("#soundKnobS");
     var soundSliderS = document.querySelector("#soundRangeS");
-    var soundVol = 100;
 
     // pong music numbers
     var pongMusic = document.querySelector("#pongMusic");
@@ -62,6 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var pongBackToMPPopup = document.querySelector("#pongMPPrompt"); 
     var pongBackToMainMenuPopup = document.querySelector("#backToMenuPrompt");
     var restartPopup = document.querySelector("#restartPrompt");
+    var showBindsPopup = document.querySelector("#showBindsPrompt");
+    var hideBindsPopup = document.querySelector("#hideBindsPrompt");
     
     // managing screen
     let currentScreen;
@@ -125,10 +154,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var resumingID = null;
     var currentCD = null;
     var difficulty = null;
-    var up1 = "ArrowUp";
-    var down1 = "ArrowDown";
-    var up2 = "w";
-    var down2 = "s";
     var pressedKeys = {"1": false,
                        "2": false,
                        "3": false,
@@ -384,6 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
         endGame();
         hideVolumeBars();
         hideScores();
+        hideBinds();
         lastScreen.classList.toggle("hidden"); // hides pause menu, game end menu, and game canvas possibly
         if (!gameCanvas.classList.contains("hidden")) {
             gameCanvas.classList.toggle("hidden");
@@ -409,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
         endGame();
         hideVolumeBars();
         hideScores();
-        lastScreen.classList.toggle("hidden"); 
+        hideBinds();        lastScreen.classList.toggle("hidden"); 
         if (!gameCanvas.classList.contains("hidden")) {
             gameCanvas.classList.toggle("hidden");
         }
@@ -435,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
     spPlayAgainL.addEventListener("click", restartPong);
     spPlayAgainW.addEventListener("click", restartPong);
     mpPlayAgain.addEventListener("click", restartPong);
+
     // main menu popups
     exitButtonP.addEventListener("click", popupExit);
     function popupExit() {
@@ -460,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = mainMenu;
         backButton.classList.toggle("hidden");
         hideScores();
+        hideBinds();
     }
 
     rejectBackMM.addEventListener("click", rejectMMexit);
@@ -473,10 +501,55 @@ document.addEventListener('DOMContentLoaded', function () {
     // volume button
     function toggleVolume() {
         volumeCross.classList.toggle("hidden");
+        volumeOn = !volumeOn;
+
         // TODO: implement volume muting and unmuting
+        if (!volumeOn) {
+
+        }
     }
     volumeButton.addEventListener("click", toggleVolume);
     volumeCross.addEventListener("click", toggleVolume);
+
+    // visibility button
+    eyeButton.addEventListener("click", toggleVisibility);
+    eyeCross.addEventListener("click", toggleVisibility);
+    eyeButton.addEventListener("mouseenter", hoverEnterEye);
+    eyeCross.addEventListener("mouseenter", hoverEnterEye);
+    eyeButton.addEventListener("mouseleave", hoverLeaveEye);
+    eyeCross.addEventListener("mouseleave", hoverLeaveEye);
+    function toggleVisibility() {
+        eyeCross.classList.toggle("hidden");
+        bindsShowing = !bindsShowing;
+        if (!bindsShowing) {
+            hideBinds();
+        }
+        else if (gameID != null) {
+            showBinds();
+        }
+    }
+
+    function hoverEnterEye() {
+        if (bindsShowing) {
+            if (hideBindsPopup.classList.contains("hidden")) {
+                hideBindsPopup.classList.toggle("hidden");
+            }
+        }
+        else {
+            if (showBindsPopup.classList.contains("hidden")) {
+                showBindsPopup.classList.toggle("hidden");
+            }
+        }
+    }
+
+    function hoverLeaveEye() {
+        if (!hideBindsPopup.classList.contains("hidden")) {
+            hideBindsPopup.classList.toggle("hidden");
+        }
+        if (!showBindsPopup.classList.contains("hidden")) {
+            showBindsPopup.classList.toggle("hidden");
+        }
+    }
 
     // settings button
     settingsButton.addEventListener("click", openSettings);
@@ -486,6 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 pauseGame();
                 showVolumeBars();
                 hideScores();
+                hideBinds();
             }
 
             else if (currentScreen == pauseMenu) { // esc during pause
@@ -495,6 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentScreen = gameCanvas;
                 hideVolumeBars();
                 showScoreGame();
+                showBinds();
             }
 
             else {
@@ -649,37 +724,98 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============ KEY PRESS HANDLING ============
 
+    // on screen buttons
+    up1Button.addEventListener("mousedown", () => movementKeyDown(up1));
+    up1Button.addEventListener("mouseup", () => keyRelease(up1));
+    down1Button.addEventListener("mousedown", () => movementKeyDown(down1));
+    down1Button.addEventListener("mouseup", () => keyRelease(down1)); 
+    up2Button.addEventListener("mousedown", () => movementKeyDown(up2));
+    up2Button.addEventListener("mouseup", () => keyRelease(up2));
+    down2Button.addEventListener("mousedown", () => movementKeyDown(down2));
+    down2Button.addEventListener("mouseup", () => keyRelease(down2)); 
+
+    function movementKeyDown(key, event) {
+        switch(key) { // we have a switch for this because we still want to set up1, up2, down1, down2 to true 
+            case up1:
+                pressedKeys.up1 = true;
+                handleKeyPress(key, event);
+                break;
+            case down1:
+                pressedKeys.down1 = true;
+                handleKeyPress(key, event);
+                break;
+            case up2:
+                pressedKeys.up2 = true;
+                handleKeyPress(key, event);
+                break;
+            case down2:
+                pressedKeys.down2 = true;
+                handleKeyPress(key, event);
+                break;
+            default:
+                break;
+        }
+    }
+
+    function keyRelease(key) {
+        switch(key) { 
+            case up1:
+                pressedKeys.up1 = false;
+                if (slider1.dash) {
+                    slider1.dash = false; // if we were just in a dash, then a keyup shouldnt create another window!
+                }
+                else {
+                    upDashWindow1 = true;
+                    dashWindowID = setTimeout(() => upDashWindow1 = false, 100);
+                }
+                break;
+            case down1:
+                pressedKeys.down1 = false;
+                if (slider1.dash) {
+                    slider1.dash = false;
+                }
+                else {
+                    downDashWindow1 = true;
+                    dashWindowID = setTimeout(() => downDashWindow1 = false, 100);
+                }
+                break;
+            case up2:
+                pressedKeys.up2 = false;
+                if (slider2.dash) {
+                    slider2.dash = false;
+                }
+                else {
+                    upDashWindow2 = true;
+                    dashWindowID = setTimeout(() => upDashWindow2 = false, 100);
+                }
+                break;
+            case down2:
+                pressedKeys.down2 = false;
+                if (slider2.dash) {
+                    slider2.dash = false;
+                }
+                else {
+                    downDashWindow2 = true;
+                    dashWindowID = setTimeout(() => downDashWindow2 = false, 100);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     // check if key is being held, only want one trigger
     document.addEventListener("keydown", (event) => {
         let key = event.key;
         if (["1", "2", "3", "4", "Escape", "m", "p", "y", "n"].includes(key)) {
             if (!pressedKeys[key]) {
                 pressedKeys[key] = true;
-                handleKeyPress(event);
+                handleKeyPress(key, event);
             } 
         } 
 
         else { // don't need to check if it's being held as these are for sliders (holding is normal)
-            switch(key) { // we have a switch for this because we still want to set up1, up2, down1, down2 to true 
-                case up1:
-                    pressedKeys.up1 = true;
-                    handleKeyPress(event);
-                    break;
-                case down1:
-                    pressedKeys.down1 = true;
-                    handleKeyPress(event);
-                    break;
-                case up2:
-                    pressedKeys.up2 = true;
-                    handleKeyPress(event);
-                    break;
-                case down2:
-                    pressedKeys.down2 = true;
-                    handleKeyPress(event);
-                    break;
-                default:
-                    break;
-            }
+            movementKeyDown(key, event);
         }
     });
 
@@ -691,56 +827,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } 
 
         else { 
-            switch(key) { 
-                case up1:
-                    pressedKeys.up1 = false;
-                    if (slider1.dash) {
-                        slider1.dash = false; // if we were just in a dash, then a keyup shouldnt create another window!
-                    }
-                    else {
-                        upDashWindow1 = true;
-                        dashWindowID = setTimeout(() => upDashWindow1 = false, 100);
-                    }
-                    break;
-                case down1:
-                    pressedKeys.down1 = false;
-                    if (slider1.dash) {
-                        slider1.dash = false;
-                    }
-                    else {
-                        downDashWindow1 = true;
-                        dashWindowID = setTimeout(() => downDashWindow1 = false, 100);
-                    }
-                    break;
-                case up2:
-                    pressedKeys.up2 = false;
-                    if (slider2.dash) {
-                        slider2.dash = false;
-                    }
-                    else {
-                        upDashWindow2 = true;
-                        dashWindowID = setTimeout(() => upDashWindow2 = false, 100);
-                    }
-                    break;
-                case down2:
-                    pressedKeys.down2 = false;
-                    if (slider2.dash) {
-                        slider2.dash = false;
-                    }
-                    else {
-                        downDashWindow2 = true;
-                        dashWindowID = setTimeout(() => downDashWindow2 = false, 100);
-                    }
-                    break;
-                default:
-                    break;
-            }
+            keyRelease(key);
         }
     });
 
     // handle the key taps
-    function handleKeyPress(event) {
-        key = event.key
+    function handleKeyPress(key, event) {
         switch(key) {
             case "1":
                 switch(currentScreen) {
@@ -756,7 +848,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         difficulty = 1;
                         startMultiplayer();
                         break;
-                    case pauseMenu: // BINDINGS TODO
+                    case pauseMenu: 
+                    case settingsMenu: 
+                    // TODO: GO TO BINDINGS SCREEN
+                        break;
+                    case mpEndScreen:
+                    case spLoseScreen:
+                    case spWinScreen:
+                        restartPong();
                         break;
                     default:
                         break;
@@ -777,6 +876,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         startMultiplayer();
                         break;
                     case pauseMenu:
+                        popupExit();
+                        break;
+                    case mpEndScreen:
+                    case spLoseScreen:
+                    case spWinScreen:
                         popupExit();
                         break;
                     default:
@@ -860,7 +964,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             case up1:
                 if (playingPong) {
-                    event.preventDefault();
+                    if (event !== undefined) {
+                        event.preventDefault();
+                    }
                     if (upDashWindow1) { // handle dash
                         slider1.dash = true;
                     }
@@ -873,7 +979,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case down1:
                 if (playingPong) {
-                    event.preventDefault();
+                    if (event !== undefined) {
+                        event.preventDefault();
+                    }
                     if (downDashWindow1) { 
                         slider1.dash = true;
                     }
@@ -887,7 +995,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             case up2:
                 if (playingPong == 2) {
-                    event.preventDefault();
+                    if (event !== undefined) {
+                        event.preventDefault();
+                    }
                     if (upDashWindow2) {
                         slider2.dash = true;
                     }
@@ -900,7 +1010,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case down2:
                 if (playingPong == 2) {
-                    event.preventDefault();
+                    if (event !== undefined) {
+                        event.preventDefault();
+                    }
                     if (downDashWindow2) { 
                         slider2.dash = true;
                     }
@@ -1109,8 +1221,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============= PONG GAME =============
     function initializeGame() {
         ball.regSpeed += (1/2)*difficulty*difficulty + (3/2)*difficulty;
+        
         showScoreGame();
-
+        showBinds();
+        
         if (playingPong === 1) {
             slider2.speed = assignCpu();
         }
@@ -1157,6 +1271,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function resumeGame() {
         pongIsPaused = false;
+        showBinds();
+        showScoreGame();
 
         countDown(3);
 
@@ -1214,6 +1330,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function freezeGame() {
         clearInterval(gameID);
+        gameID = null;
         drawBoard();
         redrawBall();
         redrawSliders();
@@ -1244,6 +1361,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function endGame() {
         clearInterval(gameID);
+        gameID = null;
 
         // reset slider1 state
         slider1.y = gameCanvas.height / 2 - 50;
@@ -1290,6 +1408,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hideScores();
         hideAllScreens();
         hideAllPopups();
+        hideBinds();
         backButton.classList.toggle("hidden");
 
         lastScreen = null;
@@ -1354,6 +1473,108 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (!pongBackToMainMenuPopup.classList.contains("hidden")) {
             pongBackToMainMenuPopup.classList.toggle("hidden");
+        }
+    }
+
+    function showBinds() {
+        if (!bindsShowing) {
+            return;
+        }
+
+        showPlayerOneBinds();
+        if (playingPong == 2) {
+            showPlayerTwoBinds();
+        }
+    }
+
+    function showPlayerOneBinds() {
+        // up1
+        if (up1 == "ArrowUp") {
+            if (arrowUp1.classList.contains("hidden")) { // show small arrow instead
+                up1Bind.innerHTML = "";
+                arrowUp1.classList.toggle("hidden");
+            }
+        }
+        else {
+            up1Bind.innerHTML = up1;
+            if (!arrowUp1.classList.contains("hidden")) { // hide small arrow
+                arrowUp1.classList.toggle("hidden");
+            }
+        }
+
+        // down1
+        if (down1 == "ArrowDown") {
+            if (arrowDown1.classList.contains("hidden")) { // show small arrow instead
+                down1Bind.innerHTML = "";
+                arrowDown1.classList.toggle("hidden");
+            }
+        }
+        else {
+            down1Bind.innerHTML = down1;
+            if (!arrowDown1.classList.contains("hidden")) { // hide small arrow
+                arrowDown1.classList.toggle("hidden");
+            }
+        }
+
+        if (up1Button.classList.contains("hidden")) {
+            up1Button.classList.toggle("hidden");
+        }
+        if (down1Button.classList.contains("hidden")) {
+            down1Button.classList.toggle("hidden");
+        }
+        
+    }
+
+
+    function showPlayerTwoBinds() {
+        // up2
+        if (up2 == "ArrowUp") {
+            if (arrowUp2.classList.contains("hidden")) { // show small arrow instead
+                up2Bind.innerHTML = "";
+                arrowUp2.classList.toggle("hidden");
+            }
+        }
+        else {
+            up2Bind.innerHTML = up2;
+            if (!arrowUp2.classList.contains("hidden")) { // hide small arrow
+                arrowUp2.classList.toggle("hidden");
+            }
+        }
+
+        // down1
+        if (down2 == "ArrowDown") {
+            if (arrowDown2.classList.contains("hidden")) { // show small arrow instead
+                down2Bind.innerHTML = "";
+                arrowDown2.classList.toggle("hidden");
+            }
+        }
+        else {
+            down2Bind.innerHTML = down2;
+            if (!arrowDown2.classList.contains("hidden")) { // hide small arrow
+                arrowDown2.classList.toggle("hidden");
+            }
+        }
+
+        if (up2Button.classList.contains("hidden")) {
+            up2Button.classList.toggle("hidden");
+        }
+        if (down2Button.classList.contains("hidden")) {
+            down2Button.classList.toggle("hidden");
+        }
+    }
+
+    function hideBinds() {
+        if (!up1Button.classList.contains("hidden")) {
+            up1Button.classList.toggle("hidden");
+        }
+        if (!down1Button.classList.contains("hidden")) {
+            down1Button.classList.toggle("hidden");
+        }
+        if (!up2Button.classList.contains("hidden")) {
+            up2Button.classList.toggle("hidden");
+        }
+        if (!down2Button.classList.contains("hidden")) {
+            down2Button.classList.toggle("hidden");
         }
     }
 
@@ -1654,6 +1875,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // if we get here then someone has won
                 gameCanvas.classList.toggle("hidden");
                 showScoreEnd();
+                hideBinds();
                 
                 if (playingPong === 1) {
                     if (player1Wins) { // user wins
