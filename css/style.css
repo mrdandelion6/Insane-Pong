@@ -409,6 +409,7 @@ footer {
     justify-content: center;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
 /* ========== pong icons ========== */
