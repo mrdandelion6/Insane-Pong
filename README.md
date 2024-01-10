@@ -37,6 +37,7 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 - Customizable keybinds
 - Pausing and resuming
 - Draggable sliders for mobile
+- Additional on screen buttons for slider movement enabling dash feature on mobile
 
 ### Several Interactive Views:
 - All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
