@@ -17,10 +17,12 @@ This is the first website I've ever made, consisting mainly of text about me. He
 Users can also play an advanced version of pong I coded from scratch! Has several menus and various difficulties of selection (see features below).
 
 
-## Features
+## General Features
 
 ### Scale Responsive Design
 The site features a scale responsive design with navigation buttons in the top bar. They collapse into a tray icon when the screen width is less than 1280px. In this state, users can toggle a vertical pop-up menu by clicking on the tray icon, providing a clean interface. The pong game also adjusts itself based on the viewport's size.
+
+## Pong Features
 
 ### Single-Player
 Users can select a single player option for the pong game if they would like to play alone against a computer of their choosen difficulty level.
@@ -37,6 +39,7 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 - Customizable keybinds
 - Pausing and resuming
 - Draggable sliders for mobile
+- Additional on screen buttons for slider movement enabling dash feature on mobile
 
 ### Several Interactive Views:
 - All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
