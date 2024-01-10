@@ -309,6 +309,7 @@ footer {
     display: flex;
     justify-content: center;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 .pongTitle {
@@ -407,6 +408,7 @@ footer {
     text-align: center;
     justify-content: center;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 /* ========== pong icons ========== */
