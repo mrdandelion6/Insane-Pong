@@ -212,11 +212,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var playerTwoScore = 0;
     var gameID;
 
-    var pressedButtons = { // for screen buttons
-        up1: false,
-        down1: false,
-        up2: false,
-        down2: false
+    var pressedButtons = { // touchIDs for touching on screen buttons 
+        up1: null,
+        down1: null,
+        up2: null,
+        down2: null,
+        MU1: false, // for clicking
+        MD1: false,
+        MU2: false,
+        MD2: false
     }
 
     function trackCursorOrTouchPosition(e) {
@@ -761,29 +765,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // on screen buttons
     up1Button.addEventListener("mousedown", up1Press);
-    up1Button.addEventListener("touchstart", up1Press);
+    up1Button.addEventListener("touchstart", (touch) => up1Press(touch));
     down1Button.addEventListener("mousedown", down1Press);
-    down1Button.addEventListener("touchstart", down1Press);
+    down1Button.addEventListener("touchstart", (touch) =>  down1Press(touch));
     up2Button.addEventListener("mousedown", up2Press);
-    up2Button.addEventListener("touchstart", up2Press);
+    up2Button.addEventListener("touchstart", (touch) => up2Press(touch));
     down2Button.addEventListener("mousedown", down2Press);
-    down2Button.addEventListener("touchstart", down2Press);
+    down2Button.addEventListener("touchstart", (touch) =>  down2Press(touch));
 
-    function up1Press() {
-        pressedButtons.up1 = true;
+    function up1Press(touch) {
+        if (touch !== undefined) {
+            pressedButtons.up1 = touch.identifier;
+        }
+        else {
+            pressedButtons.MU1 = true;
+        }
         movementKeyDown(up1);
     }
-    function down1Press() {
-        pressedButtons.down1 = true;
+    function down1Press(touch) {
+        if (touch !== undefined) {
+            pressedButtons.down1 = touch.identifier;
+        }
+        else {
+            pressedButtons.MD1 = true;
+        }
         movementKeyDown(down1);
     }
-    function up2Press() {
-        pressedButtons.up2 = true;
-        movementKeyDown(down2);
-    }
-    function down2Press() {
-        pressedButtons.up2 = true;
+    function up2Press(touch) {
+        if (touch !== undefined) {
+            pressedButtons.up2 = touch.identifier;
+        }
+        else {
+            pressedButtons.MU2 = true;
+        }
         movementKeyDown(up2);
+    }
+    function down2Press(touch) {
+        if (touch !== undefined) {
+            pressedButtons.down2 = touch.identifier;
+        }
+        else {
+            pressedButtons.MD2 = true;
+        }
+        movementKeyDown(down2);
     }
 
     function movementKeyDown(key, event) {
@@ -1098,25 +1122,55 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener("mouseup", stopDragging);
     window.addEventListener("touchend", stopDragging);
     window.addEventListener("mouseup", checkPressed);
-    window.addEventListener("touchend", checkPressed);
+    window.addEventListener("touchend", (touch) => checkPressed(touch));
 
-    function checkPressed() {
-        if (pressedButtons.up1) {
-            pressedButtons.up1 = false;
-            keyRelease(up1);
+    function checkPressed(touch) {
+        if (!playingPong) {
+            return;
         }
-        if (pressedButtons.down1) {
-            pressedButtons.down1 = false;
-            keyRelease(down1);
+
+        if (touch == undefined) { // mouseup
+            if (pressedButtons.MU1) {
+                pressedButtons.MU1 = false;
+                keyRelease(up1);
+            }
+            if (pressedButtons.MD1) {
+                pressedButtons.MD1 = false;
+                keyRelease(down1);
+            }
+            if (pressedButtons.MU2) {
+                pressedButtons.MU2 = false;
+                keyRelease(up2);
+            }
+            if (pressedButtons.MD2) {
+                pressedButtons.MD2 = false;
+                keyRelease(down2);
+            }
         }
-        if (pressedButtons.up2) {
-            pressedButtons.up2 = false;
-            keyRelease(up2);
+
+        else { // touchend
+            switch(touch.identifier) {
+                case pressedButtons.up1:
+                    pressedButtons.up1 = null;
+                    keyRelease(up1);
+                    break;
+                case pressedButtons.down1:
+                    pressedButtons.down1 = null;
+                    keyRelease(down1);
+                    break;
+                case pressedButtons.up2:
+                    pressedButtons.up2 = null;
+                    keyRelease(up2);
+                    break;
+                case pressedButtons.down2:
+                    pressedButtons.down2 = null;
+                    keyRelease(down2);
+                    break;
+                default:
+                    break;
+            }
         }
-        if (pressedButtons.down2) {
-            pressedButtons.down2 = false;
-            keyRelease(down2);
-        }
+
     }
 
     function hideVolumeBars() {
@@ -1199,6 +1253,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function stopDragging() {
+        if (!playingPong) {
+            return;
+        } 
         if (draggingID != null) {
             clearInterval(draggingID);
         }
@@ -1281,10 +1338,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function insideSlider1(x, y) {
-            return (slider1.x < x && x < slider1.x + slider1.width) && (slider1.y < y && y < slider1.y + slider1.height);
+            return (slider1.x - 50 < x && x < slider1.x + slider1.width + 50) && (slider1.y < y && y < slider1.y + slider1.height);
         } 
         function insideSlider2(x, y) {
-            return (slider2.x < x && x < slider2.x + slider2.width) && (slider2.y < y && y < slider2.y + slider2.height);
+            return (slider2.x - 50 < x && x < slider2.x + slider2.width + 50) && (slider2.y - 50 < y && y < slider2.y + slider2.height + 50);
         } 
         
     }
