@@ -212,6 +212,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var playerTwoScore = 0;
     var gameID;
 
+    var pressedButtons = { // for screen buttons
+        up1: false,
+        down1: false,
+        up2: false,
+        down2: false
+    }
+
     function trackCursorOrTouchPosition(e) {
         let inputEvent = e.touches ? e.touches[0] : e; // take first touch if touch event, else take the mousemovement
         MTPosition.x = inputEvent.clientX;
@@ -725,14 +732,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============ KEY PRESS HANDLING ============
 
     // on screen buttons
-    up1Button.addEventListener("mousedown", () => movementKeyDown(up1));
-    up1Button.addEventListener("mouseup", () => keyRelease(up1));
-    down1Button.addEventListener("mousedown", () => movementKeyDown(down1));
-    down1Button.addEventListener("mouseup", () => keyRelease(down1)); 
-    up2Button.addEventListener("mousedown", () => movementKeyDown(up2));
-    up2Button.addEventListener("mouseup", () => keyRelease(up2));
-    down2Button.addEventListener("mousedown", () => movementKeyDown(down2));
-    down2Button.addEventListener("mouseup", () => keyRelease(down2)); 
+    up1Button.addEventListener("mousedown", up1Press);
+    up1Button.addEventListener("touchstart", up1Press);
+    down1Button.addEventListener("mousedown", down1Press);
+    down1Button.addEventListener("touchstart", down1Press);
+    up2Button.addEventListener("mousedown", up2Press);
+    up2Button.addEventListener("touchstart", up2Press);
+    down2Button.addEventListener("mousedown", down2Press);
+    down2Button.addEventListener("touchstart", down2Press);
+
+    function up1Press() {
+        pressedButtons.up1 = true;
+        movementKeyDown(up1);
+    }
+    function down1Press() {
+        pressedButtons.down1 = true;
+        movementKeyDown(down1);
+    }
+    function up2Press() {
+        pressedButtons.up2 = true;
+        movementKeyDown(down2);
+    }
+    function down2Press() {
+        pressedButtons.up2 = true;
+        movementKeyDown(up2);
+    }
 
     function movementKeyDown(key, event) {
         switch(key) { // we have a switch for this because we still want to set up1, up2, down1, down2 to true 
@@ -1044,6 +1068,28 @@ document.addEventListener('DOMContentLoaded', function () {
     musicKnobS.addEventListener("touchstart", () => startDragging("music2"));
     soundKnobS.addEventListener("touchstart", () => startDragging("sound2"));
     window.addEventListener("mouseup", stopDragging);
+    window.addEventListener("touchend", stopDragging);
+    window.addEventListener("mouseup", checkPressed);
+    window.addEventListener("touchend", checkPressed);
+
+    function checkPressed() {
+        if (pressedButtons.up1) {
+            pressedButtons.up1 = false;
+            keyRelease(up1);
+        }
+        if (pressedButtons.down1) {
+            pressedButtons.down1 = false;
+            keyRelease(down1);
+        }
+        if (pressedButtons.up2) {
+            pressedButtons.up2 = false;
+            keyRelease(up2);
+        }
+        if (pressedButtons.down2) {
+            pressedButtons.down2 = false;
+            keyRelease(down2);
+        }
+    }
 
     function hideVolumeBars() {
         if (!musicAdjust.classList.contains("hidden")) {
