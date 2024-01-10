@@ -347,6 +347,18 @@ document.addEventListener('DOMContentLoaded', function () {
     eyeButton.addEventListener("touchmove", (event) => event.preventDefault());
     volumeCross.addEventListener("touchmove", (event) => event.preventDefault());
     eyeCross.addEventListener("touchmove", (event) => event.preventDefault());
+    gameCanvas.addEventListener("touchstart", (event) => event.preventDefault());
+    up1Button.addEventListener("touchstart", (event) => event.preventDefault());
+    down1Button.addEventListener("touchstart", (event) => event.preventDefault());
+    up2Button.addEventListener("touchstart", (event) => event.preventDefault());
+    down2Button.addEventListener("touchstart", (event) => event.preventDefault());
+    settingsButton.addEventListener("touchstart", (event) => event.preventDefault());
+    exitButton.addEventListener("touchstart", (event) => event.preventDefault());
+    volumeButton.addEventListener("touchstart", (event) => event.preventDefault());
+    backButton.addEventListener("touchstart", (event) => event.preventDefault());
+    eyeButton.addEventListener("touchstart", (event) => event.preventDefault());
+    volumeCross.addEventListener("touchstart", (event) => event.preventDefault());
+    eyeCross.addEventListener("touchstart", (event) => event.preventDefault());
 
 
     // resume button
