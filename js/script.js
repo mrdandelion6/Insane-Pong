@@ -765,17 +765,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
    // on screen buttons
    up1Button.addEventListener("mousedown", up1Press);
-   up1Button.addEventListener("touchstart", (event) => up1Press(event));
+   up1Button.addEventListener("touchstart", up1Press);
    down1Button.addEventListener("mousedown", down1Press);
-   down1Button.addEventListener("touchstart", (event) =>  down1Press(event));
+   down1Button.addEventListener("touchstart", down1Press);
    up2Button.addEventListener("mousedown", up2Press);
-   up2Button.addEventListener("touchstart", (event) => up2Press(event));
+   up2Button.addEventListener("touchstart", up2Press);
    down2Button.addEventListener("mousedown", down2Press);
-   down2Button.addEventListener("touchstart", (event) =>  down2Press(event));
+   down2Button.addEventListener("touchstart", down2Press);
 
     function up1Press(event) {
         console.log("tapped up1");
-        if (event !== undefined) {
+        if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.up1 = tcID;
             console.log(tcID);
@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     function down1Press(event) {
     console.log("tapped down1");
-        if (event !== undefined) {
+        if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.down1 = tcID;
             console.log(tcID);
@@ -800,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     function up2Press(event) {
         console.log("tapped up2");
-        if (event !== undefined) {
+        if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.up2 = tcID;
             console.log(tcID);
@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }   
     function down2Press(event) {
         console.log("tapped down2");
-        if (event !== undefined) {
+        if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.down2 = tcID;
             console.log(tcID);
@@ -824,14 +824,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
    window.addEventListener("mouseup", checkPressed);
-   window.addEventListener("touchend", (event) => checkPressed(event));
+   window.addEventListener("touchend", checkPressed);
 
    function checkPressed(event) {
         if (!playingPong) {
             return;
         }
 
-        if (event == undefined) { // mouseup
+        if (event.type == "mouseup") { // mouseup
             if (pressedButtons.MU1) {
                 pressedButtons.MU1 = false;
                 keyRelease(up1);
