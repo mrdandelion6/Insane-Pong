@@ -765,19 +765,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
    // on screen buttons
    up1Button.addEventListener("mousedown", up1Press);
-   up1Button.addEventListener("touchstart", (touch) => up1Press(touch));
+   up1Button.addEventListener("touchstart", (event) => up1Press(event));
    down1Button.addEventListener("mousedown", down1Press);
-   down1Button.addEventListener("touchstart", (touch) =>  down1Press(touch));
+   down1Button.addEventListener("touchstart", (event) =>  down1Press(event));
    up2Button.addEventListener("mousedown", up2Press);
-   up2Button.addEventListener("touchstart", (touch) => up2Press(touch));
+   up2Button.addEventListener("touchstart", (event) => up2Press(event));
    down2Button.addEventListener("mousedown", down2Press);
-   down2Button.addEventListener("touchstart", (touch) =>  down2Press(touch));
+   down2Button.addEventListener("touchstart", (event) =>  down2Press(event));
 
-    function up1Press(touch) {
+    function up1Press(event) {
         console.log("tapped up1");
         if (touch !== undefined) {
-            pressedButtons.up1 = touch.identifier;
-            console.log(`touch is ${touch.identifier}`);
+            // pressedButtons.up1 = touch.identifier;
+            let numT = event.touches.length;
+            console.log(numT);
         }
         else {
             console.log("what are u donig here ??");
@@ -785,33 +786,36 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         movementKeyDown(up1);
     }
-    function down1Press(touch) {
+    function down1Press(event) {
     console.log("tapped down1");
-        if (touch !== undefined) {
-            pressedButtons.down1 = touch.identifier;
-            console.log(`touch is ${touch.identifier}`);
+        if (event !== undefined) {
+            // pressedButtons.down1 = touch.identifier;
+            let numT = event.touches.length;
+            console.log(numT);
         }
         else {
             pressedButtons.MD1 = true;
         }
         movementKeyDown(down1);
     }
-    function up2Press(touch) {
+    function up2Press(event) {
         console.log("tapped up2");
-        if (touch !== undefined) {
-            pressedButtons.up2 = touch.identifier;
-            console.log(`touch is ${touch.identifier}`);
+        if (event !== undefined) {
+            // pressedButtons.up2 = touch.identifier;
+            let numT = event.touches.length;
+            console.log(numT);
         }
         else {
             pressedButtons.MU2 = true;
         }
         movementKeyDown(up2);
     }   
-    function down2Press(touch) {
+    function down2Press(event) {
         console.log("tapped down2");
-        if (touch !== undefined) {
-            pressedButtons.down2 = touch.identifier;
-            console.log(`touch is ${touch.identifier}`);
+        if (event !== undefined) {
+            // pressedButtons.down2 = event.identifier;
+            let numT = event.touches.length;
+            console.log(numT);
         }
         else {
             pressedButtons.MD2 = true;
@@ -820,54 +824,54 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
    window.addEventListener("mouseup", checkPressed);
-   window.addEventListener("touchend", (touch) => checkPressed(touch));
+   window.addEventListener("touchend", (event) => checkPressed(event));
 
-   function checkPressed(touch) {
-       if (!playingPong) {
-           return;
-       }
+   function checkPressed(event) {
+        if (!playingPong) {
+            return;
+        }
 
-       if (touch == undefined) { // mouseup
-           if (pressedButtons.MU1) {
-               pressedButtons.MU1 = false;
-               keyRelease(up1);
-           }
-           if (pressedButtons.MD1) {
-               pressedButtons.MD1 = false;
-               keyRelease(down1);
-           }
-           if (pressedButtons.MU2) {
-               pressedButtons.MU2 = false;
-               keyRelease(up2);
-           }
-           if (pressedButtons.MD2) {
-               pressedButtons.MD2 = false;
-               keyRelease(down2);
-           }
-       }
+        if (event == undefined) { // mouseup
+            if (pressedButtons.MU1) {
+                pressedButtons.MU1 = false;
+                keyRelease(up1);
+            }
+            if (pressedButtons.MD1) {
+                pressedButtons.MD1 = false;
+                keyRelease(down1);
+            }
+            if (pressedButtons.MU2) {
+                pressedButtons.MU2 = false;
+                keyRelease(up2);
+            }
+            if (pressedButtons.MD2) {
+                pressedButtons.MD2 = false;
+                keyRelease(down2);
+            }
+        }
 
-       else { // touchend
-           switch(touch.identifier) { // BUG!! TOUCH IDENTIFIERS ARE OVERLAPPING!!! ie) different touches are giving same ID somehow
-               case pressedButtons.up1:
-                   pressedButtons.up1 = null;
-                   keyRelease(up1);
-                   break;
-               case pressedButtons.down1:
-                   pressedButtons.down1 = null;
-                   keyRelease(down1);
-                   break;
-               case pressedButtons.up2:
-                   pressedButtons.up2 = null;
-                   keyRelease(up2);
-                   break;
-               case pressedButtons.down2:
-                   pressedButtons.down2 = null;
-                   keyRelease(down2);
-                   break;
-               default:
-                   break;
-           }
-       }
+        else { // touchend
+    //        switch(touch.identifier) {
+    //            case pressedButtons.up1:
+    //                pressedButtons.up1 = null;
+    //                keyRelease(up1);
+    //                break;
+    //            case pressedButtons.down1:
+    //                pressedButtons.down1 = null;
+    //                keyRelease(down1);
+    //                break;
+    //            case pressedButtons.up2:
+    //                pressedButtons.up2 = null;
+    //                keyRelease(up2);
+    //                break;
+    //            case pressedButtons.down2:
+    //                pressedButtons.down2 = null;
+    //                keyRelease(down2);
+    //                break;
+    //            default:
+    //                break;
+    //        }
+        }
 
    }
 
