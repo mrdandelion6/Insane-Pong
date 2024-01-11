@@ -780,7 +780,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else {
             pressedButtons.up1 = identifier;
             touchButtonMap[identifier] = up1;
-            console.log(identifier);
+            console.log(`ID is ${identifier}`);
         }
         movementKeyDown(up1);   
     }
@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else {
             pressedButtons.down1 = identifier;
             touchButtonMap[identifier] = down1;
-            console.log(identifier);
+            console.log(`ID is ${identifier}`);
         }
         movementKeyDown(down1);   
     }
@@ -804,7 +804,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else {
             pressedButtons.up2 = identifier;
             touchButtonMap[identifier] = up2;
-            console.log(identifier);
+            console.log(`ID is ${identifier}`);
         }  
         movementKeyDown(up2); 
     }
@@ -816,7 +816,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else {
             pressedButtons.down2 = identifier;
             touchButtonMap[identifier] = down2;
-            console.log(identifier);
+            console.log(`ID is ${identifier}`);
         }   
         movementKeyDown(down2);
     }
