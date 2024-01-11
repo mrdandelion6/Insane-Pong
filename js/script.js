@@ -776,6 +776,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function up1Press(touch) {
         if (touch !== undefined) {
             pressedButtons.up1 = touch.identifier;
+            console.log(touch.identifier);
         }
         else {
             pressedButtons.MU1 = true;
@@ -785,6 +786,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function down1Press(touch) {
         if (touch !== undefined) {
             pressedButtons.down1 = touch.identifier;
+            console.log(touch.identifier);
         }
         else {
             pressedButtons.MD1 = true;
@@ -794,6 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function up2Press(touch) {
         if (touch !== undefined) {
             pressedButtons.up2 = touch.identifier;
+            console.log(touch.identifier);
         }
         else {
             pressedButtons.MU2 = true;
@@ -803,6 +806,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function down2Press(touch) {
         if (touch !== undefined) {
             pressedButtons.down2 = touch.identifier;
+            console.log(touch.identifier);
         }
         else {
             pressedButtons.MD2 = true;
@@ -1149,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         else { // touchend
-            switch(touch.identifier) {
+            switch(touch.identifier) { // BUG!! TOUCH IDENTIFIERS ARE OVERLAPPING!!! ie) different touches are giving same ID somehow
                 case pressedButtons.up1:
                     pressedButtons.up1 = null;
                     keyRelease(up1);
