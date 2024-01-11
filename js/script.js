@@ -776,9 +776,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function up1Press(event) {
         console.log("tapped up1");
         if (event !== undefined) {
-            // pressedButtons.up1 = touch.identifier;
-            let numT = event.changedTouches.length;
-            console.log(numT);
+            let tcID = event.changedTouches[0].identifier;
+            pressedButtons.up1 = tcID;
+            console.log(tcID);
         }
         else {
             console.log("what are u donig here ??");
@@ -789,9 +789,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function down1Press(event) {
     console.log("tapped down1");
         if (event !== undefined) {
-            // pressedButtons.down1 = touch.identifier;
-            let numT = event.changedTouches.length;
-            console.log(numT);
+            let tcID = event.changedTouches[0].identifier;
+            pressedButtons.down1 = tcID;
+            console.log(tcID);
         }
         else {
             pressedButtons.MD1 = true;
@@ -801,9 +801,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function up2Press(event) {
         console.log("tapped up2");
         if (event !== undefined) {
-            // pressedButtons.up2 = touch.identifier;
-            let numT = event.changedTouches.length;
-            console.log(numT);
+            let tcID = event.changedTouches[0].identifier;
+            pressedButtons.up2 = tcID;
+            console.log(tcID);
         }
         else {
             pressedButtons.MU2 = true;
@@ -813,9 +813,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function down2Press(event) {
         console.log("tapped down2");
         if (event !== undefined) {
-            // pressedButtons.down2 = event.identifier;
-            let numT = event.changedTouches.length;
-            console.log(numT);
+            let tcID = event.changedTouches[0].identifier;
+            pressedButtons.down2 = tcID;
+            console.log(tcID);
         }
         else {
             pressedButtons.MD2 = true;
@@ -851,26 +851,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         else { // touchend
-    //        switch(touch.identifier) {
-    //            case pressedButtons.up1:
-    //                pressedButtons.up1 = null;
-    //                keyRelease(up1);
-    //                break;
-    //            case pressedButtons.down1:
-    //                pressedButtons.down1 = null;
-    //                keyRelease(down1);
-    //                break;
-    //            case pressedButtons.up2:
-    //                pressedButtons.up2 = null;
-    //                keyRelease(up2);
-    //                break;
-    //            case pressedButtons.down2:
-    //                pressedButtons.down2 = null;
-    //                keyRelease(down2);
-    //                break;
-    //            default:
-    //                break;
-    //        }
+            let tcID = event.changedTouches[0].identifier;
+            pressedButtons.down1 = tcID;
+            console.log(`ended touch ${tcID}`);
+            switch(tcID) {
+                case pressedButtons.up1:
+                    pressedButtons.up1 = null;
+                    keyRelease(up1);
+                    break;
+                case pressedButtons.down1:
+                    pressedButtons.down1 = null;
+                    keyRelease(down1);
+                    break;
+                case pressedButtons.up2:
+                    pressedButtons.up2 = null;
+                    keyRelease(up2);
+                    break;
+                case pressedButtons.down2:
+                    pressedButtons.down2 = null;
+                    keyRelease(down2);
+                    break;
+                default:
+                    break;
+            }
         }
 
    }
