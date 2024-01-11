@@ -775,9 +775,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function up1Press(event) {
         console.log("tapped up1");
-        if (touch !== undefined) {
+        if (event !== undefined) {
             // pressedButtons.up1 = touch.identifier;
-            let numT = event.touches.length;
+            let numT = event.changedTouches.length;
             console.log(numT);
         }
         else {
@@ -790,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log("tapped down1");
         if (event !== undefined) {
             // pressedButtons.down1 = touch.identifier;
-            let numT = event.touches.length;
+            let numT = event.changedTouches.length;
             console.log(numT);
         }
         else {
@@ -802,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("tapped up2");
         if (event !== undefined) {
             // pressedButtons.up2 = touch.identifier;
-            let numT = event.touches.length;
+            let numT = event.changedTouches.length;
             console.log(numT);
         }
         else {
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("tapped down2");
         if (event !== undefined) {
             // pressedButtons.down2 = event.identifier;
-            let numT = event.touches.length;
+            let numT = event.changedTouches.length;
             console.log(numT);
         }
         else {
