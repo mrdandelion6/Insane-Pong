@@ -854,22 +854,22 @@ document.addEventListener('DOMContentLoaded', function () {
             let tcID = event.changedTouches[0].identifier;
             switch(tcID) {
                 case pressedButtons.up1:
-                    console.log(`released up1`);
+                    console.log(`released up1!`);
                     pressedButtons.up1 = null;
                     keyRelease(up1);
                     break;
                 case pressedButtons.down1:
-                    console.log(`released down1`);
+                    console.log(`released down1!`);
                     pressedButtons.down1 = null;
                     keyRelease(down1);
                     break;
                 case pressedButtons.up2:
-                    console.log(`released up2`);
+                    console.log(`released up2!`);
                     pressedButtons.up2 = null;
                     keyRelease(up2);
                     break;
                 case pressedButtons.down2:
-                    console.log(`released down2`);
+                    console.log(`released down2!`);
                     pressedButtons.down2 = null;
                     keyRelease(down2);
                     break;
