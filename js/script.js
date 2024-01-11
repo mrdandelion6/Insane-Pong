@@ -852,7 +852,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         else { // touchend
             let tcID = event.changedTouches[0].identifier;
-            pressedButtons.down1 = tcID;
             switch(tcID) {
                 case pressedButtons.up1:
                     console.log(`released up1`);
