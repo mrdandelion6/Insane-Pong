@@ -222,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         MU2: false,
         MD2: false
     }
+    var touchButtonMap = {};
 
     function trackCursorOrTouchPosition(e) {
         let inputEvent = e.touches ? e.touches[0] : e; // take first touch if touch event, else take the mousemovement
@@ -763,55 +764,97 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============ KEY PRESS HANDLING ============
 
-    // on screen buttons
     up1Button.addEventListener("mousedown", up1Press);
-    up1Button.addEventListener("touchstart", (touch) => up1Press(touch));
+    up1Button.addEventListener("touchstart", (touch) => up1Press(touch.identifier));
     down1Button.addEventListener("mousedown", down1Press);
-    down1Button.addEventListener("touchstart", (touch) =>  down1Press(touch));
+    down1Button.addEventListener("touchstart", (touch) => down1Press(touch.identifier));
     up2Button.addEventListener("mousedown", up2Press);
-    up2Button.addEventListener("touchstart", (touch) => up2Press(touch));
+    up2Button.addEventListener("touchstart", (touch) => up2Press(touch.identifier));
     down2Button.addEventListener("mousedown", down2Press);
-    down2Button.addEventListener("touchstart", (touch) =>  down2Press(touch));
-
-    function up1Press(touch) {
-        if (touch !== undefined) {
-            pressedButtons.up1 = touch.identifier;
-            console.log(touch.identifier);
-        }
-        else {
+    down2Button.addEventListener("touchstart", (touch) => down2Press(touch.identifier));
+    
+    function up1Press(identifier) {
+        if (identifier == undefined) {
             pressedButtons.MU1 = true;
         }
-        movementKeyDown(up1);
-    }
-    function down1Press(touch) {
-        if (touch !== undefined) {
-            pressedButtons.down1 = touch.identifier;
-            console.log(touch.identifier);
-        }
         else {
+            pressedButtons.up1 = identifier;
+            touchButtonMap[identifier] = up1;
+            console.log(identifier);
+        }
+        movementKeyDown(up1);   
+    }
+    
+    function down1Press(identifier) {
+        if (identifier == undefined) {
             pressedButtons.MD1 = true;
         }
-        movementKeyDown(down1);
-    }
-    function up2Press(touch) {
-        if (touch !== undefined) {
-            pressedButtons.up2 = touch.identifier;
-            console.log(touch.identifier);
-        }
         else {
+            pressedButtons.down1 = identifier;
+            touchButtonMap[identifier] = down1;
+            console.log(identifier);
+        }
+        movementKeyDown(down1);   
+    }
+    
+    function up2Press(identifier) {
+        if (identifier == undefined) {
             pressedButtons.MU2 = true;
         }
-        movementKeyDown(up2);
-    }
-    function down2Press(touch) {
-        if (touch !== undefined) {
-            pressedButtons.down2 = touch.identifier;
-            console.log(touch.identifier);
-        }
         else {
+            pressedButtons.up2 = identifier;
+            touchButtonMap[identifier] = up2;
+            console.log(identifier);
+        }  
+        movementKeyDown(up2); 
+    }
+    
+    function down2Press(identifier) {
+        if (identifier == undefined) {
             pressedButtons.MD2 = true;
         }
+        else {
+            pressedButtons.down2 = identifier;
+            touchButtonMap[identifier] = down2;
+            console.log(identifier);
+        }   
         movementKeyDown(down2);
+    }
+    
+    window.addEventListener("mouseup", checkPressed);
+    window.addEventListener("touchend", (touch) => checkPressed(touch.identifier));
+    
+    function checkPressed(identifier) {
+      if (!playingPong) {
+        return;
+      }
+    
+      if (identifier == undefined) { // mouseup
+        if (pressedButtons.MU1) {
+            pressedButtons.MU1 = false;
+            keyRelease(up1);
+        }
+        if (pressedButtons.MD1) {
+            pressedButtons.MD1 = false;
+            keyRelease(down1);
+        }
+        if (pressedButtons.MU2) {
+            pressedButtons.MU2 = false;
+            keyRelease(up2);
+        }
+        if (pressedButtons.MD2) {
+            pressedButtons.MD2 = false;
+            keyRelease(down2);
+        }
+    }
+
+    else { // touchend
+        const button = touchButtonMap[identifier];
+        if (button) {
+          touchButtonMap[identifier] = null;
+          keyRelease(button);
+        }
+      }
     }
 
     function movementKeyDown(key, event) {
@@ -1125,57 +1168,6 @@ document.addEventListener('DOMContentLoaded', function () {
     soundKnobS.addEventListener("touchstart", () => startDragging("sound2"));
     window.addEventListener("mouseup", stopDragging);
     window.addEventListener("touchend", stopDragging);
-    window.addEventListener("mouseup", checkPressed);
-    window.addEventListener("touchend", (touch) => checkPressed(touch));
-
-    function checkPressed(touch) {
-        if (!playingPong) {
-            return;
-        }
-
-        if (touch == undefined) { // mouseup
-            if (pressedButtons.MU1) {
-                pressedButtons.MU1 = false;
-                keyRelease(up1);
-            }
-            if (pressedButtons.MD1) {
-                pressedButtons.MD1 = false;
-                keyRelease(down1);
-            }
-            if (pressedButtons.MU2) {
-                pressedButtons.MU2 = false;
-                keyRelease(up2);
-            }
-            if (pressedButtons.MD2) {
-                pressedButtons.MD2 = false;
-                keyRelease(down2);
-            }
-        }
-
-        else { // touchend
-            switch(touch.identifier) { // BUG!! TOUCH IDENTIFIERS ARE OVERLAPPING!!! ie) different touches are giving same ID somehow
-                case pressedButtons.up1:
-                    pressedButtons.up1 = null;
-                    keyRelease(up1);
-                    break;
-                case pressedButtons.down1:
-                    pressedButtons.down1 = null;
-                    keyRelease(down1);
-                    break;
-                case pressedButtons.up2:
-                    pressedButtons.up2 = null;
-                    keyRelease(up2);
-                    break;
-                case pressedButtons.down2:
-                    pressedButtons.down2 = null;
-                    keyRelease(down2);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
 
     function hideVolumeBars() {
         if (!musicAdjust.classList.contains("hidden")) {
