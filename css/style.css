@@ -652,19 +652,19 @@ footer {
 
 #p2Up {
     top: 110px;
-    left: 10%;
+    left: 20%;
 }
 #p2Down {
     top: 500px;
-    left: 10%;
+    left: 20%;
 }
 #p1Up {
     top: 110px;
-    left: calc(90% - 40px);
+    left: calc(80% - 40px);
 }
 #p1Down {
     top: 500px;
-    left: calc(90% - 40px);
+    left: calc(80% - 40px);
 }
 
 .skinnyArrow {
@@ -707,4 +707,8 @@ footer {
 #hideBindsPrompt p, #showBindsPrompt p {
     margin: 0;
     font-size: 12px;
+}
+
+img.pongButton {
+    padding: 0px;
 }

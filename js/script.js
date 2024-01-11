@@ -223,14 +223,24 @@ document.addEventListener('DOMContentLoaded', function () {
         MD2: false
     }
 
+    var draggingSliders = {
+        s1: null,
+        s2: null
+    }
+
     function trackCursorOrTouchPosition(e) {
-        let inputEvent = e.touches ? e.touches[0] : e; // take first touch if touch event, else take the mousemovement
+        let inputEvent = e.changedTouches ? e.changedTouches[e.changedTouches.length - 1] : e; // take first touch if touch event, else take the mousemovement
         MTPosition.x = inputEvent.clientX;
         MTPosition.y = inputEvent.clientY;
+        if (e.type !== "mousemove") {
+            console.log(e.changedTouches[e.changedTouches.length - 1].identifier);
+        }
     }
 
     document.addEventListener('mousemove', trackCursorOrTouchPosition); // constantly track mouse position
     document.addEventListener('touchmove', trackCursorOrTouchPosition); // constantly track touch position (both mouse and touch position are tracked in same value)
+    document.addEventListener('touchstart', trackCursorOrTouchPosition); // constantly track touch position (both mouse and touch position are tracked in same value)
+
 
     openButton.addEventListener('click', function () {
         popMenu.classList.toggle('hidden');
@@ -415,7 +425,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // exit button
-    exitButton.addEventListener("click", () => {
+    exitButton.addEventListener("click", exitBut);
+
+    function exitBut() {
         if (currentScreen != pongExitPopup) {
             pongExitPopup.classList.toggle("hidden");
             extraScreen = currentScreen;
@@ -429,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 freezeGame();
             }
         }
-    });
+    }
 
     confirmExit.addEventListener("click", exitPong);
     rejectExit.addEventListener("click", cancelExit);
@@ -1083,6 +1095,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     case pongBackToMainMenuPopup:
                         confirmMMexit();
                         break;
+                    case pongExitPopup:
+                        exitPong();
+                        break;
                     default:
                         break;
                 }
@@ -1097,6 +1112,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case pongBackToMainMenuPopup:
                         rejectMMexit();
+                        break;
+                    case pongExitPopup:
+                        cancelExit();
                         break;
                     default:
                         break;
@@ -1285,24 +1303,56 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============ VOLUME SLIDERS ============
 
     // ============ PONG SLIDERS ============
-    gameCanvas.addEventListener("mousedown", dragSlider);
-    gameCanvas.addEventListener("touchstart", dragSlider);
+    gameCanvas.addEventListener("mousedown", (event) => setTimeout(dragSlider(event), 1));
+    gameCanvas.addEventListener("touchstart", (event) => setTimeout(dragSlider(event), 1));
+    gameCanvas.addEventListener("touchmove", (event) => {
+        let t = event.changedTouches[event.changedTouches.length - 1];
+        let y = t.clientY;
+        if (draggingSliders.s1 === t) {
+            // implement dragging
+        }
+        if (draggingSliders.s2 === t) {
 
-    function dragSlider() {
+        }
+    });
+
+    function dragSlider(event) {
         let rectCanvas = gameCanvas.getBoundingClientRect();
-        let x = MTPosition.x - rectCanvas.left; // x, y position in canvas
-        let y = MTPosition.y - rectCanvas.top;
+        let x;
+        let y;
 
-        if (insideSlider1(x, y)) {
-            console.log("you clicked slider 1");
-            slider1.held = true;
-            startDraggingPong("slider1");
+        if (event.type == "touchstart") { // touchstart
+            let t = event.changedTouches[event.changedTouches.length - 1];
+            x = t.clientX - rectCanvas.left;
+            y = t.clientY - rectCanvas.top;
+            
+
+            if (insideSlider1(x, y)) {
+                console.log("you clicked slider 1");
+                draggingSliders.s1 = t.identifier;
+            }
+    
+            else if (insideSlider2(x, y) && (playingPong === 2)) {
+                console.log("you clicked slider 2");
+                draggingSliders.s2 = t.identifier;
+            }
         }
 
-        else if (insideSlider2(x, y) && (playingPong === 2)) {
-            console.log("you clicked slider 2");
-            slider2.held = true;
-            startDraggingPong("slider2");
+        else { // mousedown
+            x = event.clientX - rectCanvas.left;
+            y = event.clientY - rectCanvas.top;
+
+            if (insideSlider1(x, y)) {
+                console.log("you clicked slider 1");
+                slider1.held = true;
+                startDraggingPong("slider1");
+            }
+    
+            else if (insideSlider2(x, y) && (playingPong === 2)) {
+                console.log("you clicked slider 2");
+                slider2.held = true;
+                startDraggingPong("slider2");
+            }
         }
 
         function startDraggingPong(type) {
@@ -1360,7 +1410,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return (slider1.x - 50 < x && x < slider1.x + slider1.width + 50) && (slider1.y < y && y < slider1.y + slider1.height);
         } 
         function insideSlider2(x, y) {
-            return (slider2.x - 50 < x && x < slider2.x + slider2.width + 50) && (slider2.y - 50 < y && y < slider2.y + slider2.height + 50);
+            return (slider2.x - 50 < x && x < slider2.x + slider2.width + 50) && (slider2.y < y && y < slider2.y + slider2.height);
         } 
         
     }
