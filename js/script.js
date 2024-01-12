@@ -175,7 +175,8 @@ document.addEventListener('DOMContentLoaded', function () {
         speed: 6,
         velocityY: 0,
         dash: false,
-        held: false
+        held: false,
+        mouse: false,
     }
     let slider2 = {
         width: 10,
@@ -185,7 +186,8 @@ document.addEventListener('DOMContentLoaded', function () {
         speed: 6,
         velocityY: 0,
         dash: false,
-        held: false
+        held: false,
+        mouse: false,
     }
     let ball = {
         exists: false,
@@ -201,6 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
         onFire: false,
         xRelative: 50 // percentage relative to canvas size. 50 is 50% across canvas so halfway. used to adjust the ball's position on resizing.
     }
+    let velID1 = null;
+    let velID2 = null;
     var upDashWindow1 = false; // tapping a key during dash window gives u boost
     var downDashWindow1 = false;
     var upDashWindow2 = false;
@@ -232,9 +236,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let inputEvent = e.changedTouches ? e.changedTouches[e.changedTouches.length - 1] : e; // take first touch if touch event, else take the mousemovement
         MTPosition.x = inputEvent.clientX;
         MTPosition.y = inputEvent.clientY;
-        if (e.type !== "mousemove") {
-            console.log(e.changedTouches[e.changedTouches.length - 1].identifier);
-        }
     }
 
     document.addEventListener('mousemove', trackCursorOrTouchPosition); // constantly track mouse position
@@ -348,32 +349,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============ PONG BUTTONS ============
 
     // prevent sliding on touch screen
-    
-    gameCanvas.addEventListener("touchmove", (event) => event.preventDefault());
-    up1Button.addEventListener("touchmove", (event) => event.preventDefault());
-    down1Button.addEventListener("touchmove", (event) => event.preventDefault());
-    up2Button.addEventListener("touchmove", (event) => event.preventDefault());
-    down2Button.addEventListener("touchmove", (event) => event.preventDefault());
-    settingsButton.addEventListener("touchmove", (event) => event.preventDefault());
-    exitButton.addEventListener("touchmove", (event) => event.preventDefault());
-    volumeButton.addEventListener("touchmove", (event) => event.preventDefault());
-    backButton.addEventListener("touchmove", (event) => event.preventDefault());
-    eyeButton.addEventListener("touchmove", (event) => event.preventDefault());
-    volumeCross.addEventListener("touchmove", (event) => event.preventDefault());
-    eyeCross.addEventListener("touchmove", (event) => event.preventDefault());
-    gameCanvas.addEventListener("touchstart", (event) => event.preventDefault());
-    up1Button.addEventListener("touchstart", (event) => event.preventDefault());
-    down1Button.addEventListener("touchstart", (event) => event.preventDefault());
-    up2Button.addEventListener("touchstart", (event) => event.preventDefault());
-    down2Button.addEventListener("touchstart", (event) => event.preventDefault());
-    settingsButton.addEventListener("touchstart", (event) => event.preventDefault());
-    exitButton.addEventListener("touchstart", (event) => event.preventDefault());
-    volumeButton.addEventListener("touchstart", (event) => event.preventDefault());
-    backButton.addEventListener("touchstart", (event) => event.preventDefault());
-    eyeButton.addEventListener("touchstart", (event) => event.preventDefault());
-    volumeCross.addEventListener("touchstart", (event) => event.preventDefault());
-    eyeCross.addEventListener("touchstart", (event) => event.preventDefault());
-
+    gameCanvas.addEventListener("touchmove", (event) => {
+        if (event.cancelable) {
+            event.preventDefault();
+        }
+    });
 
     // resume button
     resumeButton.addEventListener("click", () => {
@@ -786,24 +766,19 @@ document.addEventListener('DOMContentLoaded', function () {
    down2Button.addEventListener("touchstart", down2Press);
 
     function up1Press(event) {
-        console.log("tapped up1");
         if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.up1 = tcID;
-            console.log(tcID);
         }
         else {
-            console.log("what are u donig here ??");
             pressedButtons.MU1 = true;
         }
         movementKeyDown(up1);
     }
     function down1Press(event) {
-    console.log("tapped down1");
         if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.down1 = tcID;
-            console.log(tcID);
         }
         else {
             pressedButtons.MD1 = true;
@@ -811,11 +786,9 @@ document.addEventListener('DOMContentLoaded', function () {
         movementKeyDown(down1);
     }
     function up2Press(event) {
-        console.log("tapped up2");
         if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.up2 = tcID;
-            console.log(tcID);
         }
         else {
             pressedButtons.MU2 = true;
@@ -823,11 +796,9 @@ document.addEventListener('DOMContentLoaded', function () {
         movementKeyDown(up2);
     }   
     function down2Press(event) {
-        console.log("tapped down2");
         if (event.type == "touchstart") {
             let tcID = event.changedTouches[0].identifier;
             pressedButtons.down2 = tcID;
-            console.log(tcID);
         }
         else {
             pressedButtons.MD2 = true;
@@ -866,28 +837,38 @@ document.addEventListener('DOMContentLoaded', function () {
             let tcID = event.changedTouches[0].identifier;
             switch(tcID) {
                 case pressedButtons.up1:
-                    console.log(`released up1!`);
                     pressedButtons.up1 = null;
                     keyRelease(up1);
                     break;
                 case pressedButtons.down1:
-                    console.log(`released down1!`);
                     pressedButtons.down1 = null;
                     keyRelease(down1);
                     break;
                 case pressedButtons.up2:
-                    console.log(`released up2!`);
                     pressedButtons.up2 = null;
                     keyRelease(up2);
                     break;
                 case pressedButtons.down2:
-                    console.log(`released down2!`);
                     pressedButtons.down2 = null;
                     keyRelease(down2);
                     break;
                 default:
                     break;
             }
+
+            switch(tcID) {
+                case draggingSliders.s1:
+                    draggingSliders.s1 = null;
+                    slider1.held = false;
+                    break;
+                case draggingSliders.s2:
+                    draggingSliders.s2 = null;
+                    slider2.held = false;
+                    break;
+                default:
+                    break;
+            }
+
         }
 
    }
@@ -1135,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         slider1.dash = true;
                     }
                     else {
-                        clearTimeout(dashWindowID1); // clear timer as we are closing window now anyways (this step isnt necessary, just to prevent clog)
+                        clearTimeout(dashWindowID1); // clear timer as we are closing window now anyways (this step isnt necessary, just to prevent clutter)
                         downDashWindow1 = false; // kill the down dash window
                         slider1.dash = false; // kill a current dash
                     }
@@ -1208,7 +1189,6 @@ document.addEventListener('DOMContentLoaded', function () {
     musicKnobS.addEventListener("touchstart", () => startDragging("music2"));
     soundKnobS.addEventListener("touchstart", () => startDragging("sound2"));
     window.addEventListener("mouseup", stopDragging);
-    window.addEventListener("touchend", stopDragging);
 
     function hideVolumeBars() {
         if (!musicAdjust.classList.contains("hidden")) {
@@ -1297,8 +1277,8 @@ document.addEventListener('DOMContentLoaded', function () {
             clearInterval(draggingID);
         }
         draggingID = null;
-        slider1.held = false;
-        slider2.held = false;
+        slider1.mouse = false;
+        slider2.mouse = false;
     }
     // ============ VOLUME SLIDERS ============
 
@@ -1307,12 +1287,11 @@ document.addEventListener('DOMContentLoaded', function () {
     gameCanvas.addEventListener("touchstart", (event) => setTimeout(dragSlider(event), 1));
     gameCanvas.addEventListener("touchmove", (event) => {
         let t = event.changedTouches[event.changedTouches.length - 1];
-        let y = t.clientY;
-        if (draggingSliders.s1 === t) {
-            // implement dragging
+        if (draggingSliders.s1 === t.identifier) {
+            startDraggingPong("slider1", t);
         }
-        if (draggingSliders.s2 === t) {
-
+        else if (draggingSliders.s2 === t.identifier) {
+            startDraggingPong("slider2", t);
         }
     });
 
@@ -1327,13 +1306,13 @@ document.addEventListener('DOMContentLoaded', function () {
             y = t.clientY - rectCanvas.top;
             
 
-            if (insideSlider1(x, y)) {
-                console.log("you clicked slider 1");
+            if (insideSlider1(x, y) && !slider1.mouse && !slider1.held) {
+                slider1.held = true;
                 draggingSliders.s1 = t.identifier;
             }
     
-            else if (insideSlider2(x, y) && (playingPong === 2)) {
-                console.log("you clicked slider 2");
+            else if (insideSlider2(x, y) && (playingPong === 2) && !slider2.mouse && !slider2.held) {
+                slider2.held = true;
                 draggingSliders.s2 = t.identifier;
             }
         }
@@ -1342,78 +1321,88 @@ document.addEventListener('DOMContentLoaded', function () {
             x = event.clientX - rectCanvas.left;
             y = event.clientY - rectCanvas.top;
 
-            if (insideSlider1(x, y)) {
-                console.log("you clicked slider 1");
-                slider1.held = true;
+            if (insideSlider1(x, y) && !slider1.held) {
+                slider1.mouse = true;
                 startDraggingPong("slider1");
             }
     
-            else if (insideSlider2(x, y) && (playingPong === 2)) {
-                console.log("you clicked slider 2");
-                slider2.held = true;
+            else if (insideSlider2(x, y) && (playingPong === 2) && !slider2.held) {
+                slider2.mouse = true;
                 startDraggingPong("slider2");
             }
         }
 
-        function startDraggingPong(type) {
-            let velID = null;
-            draggingID = setInterval(() => {
-                let currY = MTPosition.y - rectCanvas.top;
-                let bddY = Math.min(Math.max(slider1.height / 2, currY), 600 - slider1.height / 2); // using slider1's height but we expect both sliders to have same height
-                if (type == "slider1") {    
-                    if (slider1.y < bddY - slider1.height / 2) { // going down
-                        slider1.velocityY = slider1.speed;
-                        if (velID != null) {
-                            clearTimeout(velID);
-                            velID = null;
-                        }
-                        velID = setTimeout(() => slider1.velocityY = 0, 50);
-                    }
-                    else if (slider1.y > bddY - slider1.height / 2) { // going up
-                        slider1.velocityY = -slider1.speed;
-                        if (velID != null) {
-                            clearTimeout(velID);
-                            velID = null;
-                        }
-                        veclID = setTimeout(() => slider1.velocityY = 0, 50);
-                    }
-                                                                    // if we expect sliders to have distinct heights, expand this calculation into the if statements
-                    slider1.y = bddY - slider1.height / 2; // set the center to the cursor
-                }
-                else if (type == "slider2") {
-                    if (slider2.y < bddY - slider2.height / 2) { // going down
-                        slider2.velocityY = slider2.speed;
-                        if (velID != null) {
-                            clearTimeout(velID);
-                            velID = null;
-                        }
-                        velID = setTimeout(() => slider2.velocityY = 0, 50);
-                    }
-                    else if (slider2.y > bddY - slider2.height / 2) { // going up
-                        slider2.velocityY = -slider2.speed;
-                        if (velID != null) {
-                            clearTimeout(velID);
-                            velID = null;
-                        }
-                        veclID = setTimeout(() => slider2.velocityY = 0, 50);
-                    }
-                    slider2.y = bddY - slider2.height / 2;
-                }
-                else {
-                    console.log("ERROR, WRONG TYPE TO DRAG");
-                }
+    }
 
-            }, 10);
+    function startDraggingPong(type, touch) { // handles both mousedown and touchmove (not touch start)
+        let currY;
+        let rectCanvas = gameCanvas.getBoundingClientRect();
+
+        if (touch !== undefined) { // touchmove
+            currY = touch.clientY - rectCanvas.top;
+            moveSlider(type, currY);
         }
 
-        function insideSlider1(x, y) {
-            return (slider1.x - 50 < x && x < slider1.x + slider1.width + 50) && (slider1.y < y && y < slider1.y + slider1.height);
-        } 
-        function insideSlider2(x, y) {
-            return (slider2.x - 50 < x && x < slider2.x + slider2.width + 50) && (slider2.y < y && y < slider2.y + slider2.height);
-        } 
-        
+        else { // mousedown
+            draggingID = setInterval(() => {
+                currY = MTPosition.y - rectCanvas.top;
+                moveSlider(type, currY);
+            }, 10);
+        }
     }
+
+    function moveSlider(type, currY) {
+        let bddY = Math.min(Math.max(slider1.height / 2, currY), 600 - slider1.height / 2); // using slider1's height but we expect both sliders to have same height
+        if (type == "slider1") {    
+            if (slider1.y < bddY - slider1.height / 2) { // going down
+                slider1.velocityY = slider1.speed;
+                if (velID1 != null) {
+                    clearTimeout(velID1);
+                }
+                velID1 = setTimeout(() => slider1.velocityY = 0, 50);
+            }
+            else if (slider1.y > bddY - slider1.height / 2) { // going up
+                slider1.velocityY = -slider1.speed;
+                if (velID1 != null) {
+                    clearTimeout(velID1);
+                    velID1 = null;
+                }
+                velID1 = setTimeout(() => slider1.velocityY = 0, 50);
+            }
+            // if we expect sliders to have distinct heights, expand this calculation into the if statements
+            slider1.y = bddY - slider1.height / 2; // set the center to the cursor
+        }
+        else if (type == "slider2") {
+            if (slider2.y < bddY - slider2.height / 2) { // going down
+                slider2.velocityY = slider2.speed;
+                if (velID2 != null) {
+                    clearTimeout(velID2);
+                    velID2 = null;
+                }
+                velID2 = setTimeout(() => slider2.velocityY = 0, 50);
+            }
+            else if (slider2.y > bddY - slider2.height / 2) { // going up
+                slider2.velocityY = -slider2.speed;
+                if (velID2 != null) {
+                    clearTimeout(velID2);
+                    velID2 = null;
+                }
+                velID2 = setTimeout(() => slider2.velocityY = 0, 50);
+            }
+            slider2.y = bddY - slider2.height / 2;
+        }
+        else {
+            console.log("ERROR, WRONG TYPE TO DRAG");
+        }
+    }
+
+    function insideSlider1(x, y) {
+        return (slider1.x - 50 < x && x < slider1.x + slider1.width + 50) && (slider1.y < y && y < slider1.y + slider1.height);
+    } 
+    function insideSlider2(x, y) {
+        return (slider2.x - 50 < x && x < slider2.x + slider2.width + 50) && (slider2.y < y && y < slider2.y + slider2.height);
+    } 
+
     // ============ PONG SLIDERS ============
 
     // ============================== MORE FUNCTIONS ==============================
@@ -1446,7 +1435,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function startSinglePlayer() {
-        // console.log(`starting single player ${difficulty}`);
         currentScreen.classList.toggle("hidden");
         gameCanvas.classList.toggle("hidden");
         lastScreen = currentScreen;
@@ -1458,7 +1446,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function startMultiplayer() {
-        // console.log(`starting multi player ${difficulty}`);
         currentScreen.classList.toggle("hidden");
         gameCanvas.classList.toggle("hidden");
         lastScreen = currentScreen;
@@ -1544,7 +1531,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             freezeGame();
             pongBackToSPPopup.classList.toggle("hidden");
-            console.log("game is frozen..");
         }
     }
 
@@ -1846,7 +1832,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     slider1.velocityY = 3 * slider1.speed;
                 }
             }
-            else if (!slider1.held) {
+            else if (!slider1.held && !slider1.mouse) {
                 slider1.velocityY = 0;
             }
 
@@ -1863,7 +1849,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         slider2.velocityY = 3 * slider2.speed;
                     }
                 }
-                else if (!slider2.held) {
+                else if (!slider2.held && !slider2.mouse) {
                     slider2.velocityY = 0;
                 }
             } 
@@ -1896,10 +1882,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            if (!slider1.held) {
+            if (!slider1.held && !slider1.mouse) {
                 slider1.y += slider1.velocityY;
             }
-            if (!slider2.held) {
+            if (!slider2.held && !slider2.mouse) {
                 slider2.y += slider2.velocityY;
             }
         }
