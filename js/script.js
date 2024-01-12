@@ -22,6 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var exitButton = document.querySelector("#pongExitIcon");
     var resumeButton = document.querySelector("#pongResumeIcon"); // pause screen
     var restartButton = document.querySelector("#pongRestartIcon");
+    var buttonsArray = [
+        settingsButton,
+        volumeButton,
+        volumeCross,
+        eyeButton,
+        eyeCross,
+        backButton,
+        exitButton,
+        resumeButton,
+        restartButton,
+    ];
 
     // pong bind buttons
     var up1Button = document.querySelector("#p1Up"); // up1
@@ -147,6 +158,37 @@ document.addEventListener('DOMContentLoaded', function () {
     var soundToggleP = document.querySelector("#soundToggleP");
     var exitButtonP = document.querySelector("#exitP");
 
+    var textButtonsArray = [
+        spPlayAgainW,
+        spPlayAgainL,
+        mpPlayAgain,
+        spBackMenuL,
+        spBackMenuW,
+        mpBackMenu,
+        confirmExit,
+        rejectExit,
+        confirmBackMM,
+        rejectBackMM,
+        confirmBackSP,
+        rejectBackSP,
+        confirmBackMP,
+        rejectBackMP,
+        confirmRestart,
+        rejectRestart,
+        selectMP,
+        selectSP,
+        easyModeSP,
+        mediumModeSP,
+        hardModeSP,
+        impossibleModeSP,
+        slowModeMP,
+        mediumModeMP,
+        fastModeMP,
+        blitzModeMP,
+    ];
+
+    var allButtonsArray = buttonsArray.concat(textButtonsArray);
+
     // pong items
     var pongIsOpen = false;
     var playingPong = 0; // 0 for not playing, 1 for SP, 2 for MP
@@ -237,6 +279,8 @@ document.addEventListener('DOMContentLoaded', function () {
         MTPosition.x = inputEvent.clientX;
         MTPosition.y = inputEvent.clientY;
     }
+
+
 
     document.addEventListener('mousemove', trackCursorOrTouchPosition); // constantly track mouse position
     document.addEventListener('touchmove', trackCursorOrTouchPosition); // constantly track touch position (both mouse and touch position are tracked in same value)
@@ -1584,6 +1628,20 @@ document.addEventListener('DOMContentLoaded', function () {
         difficulty = null;
         playingPong = 0;
         pongIsPaused = false;
+
+        pressedButtons.up1 = null;
+        pressedButtons.down1 = null;
+        pressedButtons.up2 = null;
+        pressedButtons.down2 = null;
+        pressedButtons.MU1 = false;
+        pressedButtons.MD1 = false;
+        pressedButtons.MU2 = false;
+        pressedButtons.MD2 = false;
+
+        draggingSliders.s1 = null;
+        draggingSliders.s2 = null;
+        velID1 = null;
+        velID2 = null;
     }
 
     function exitPong() {
