@@ -94,6 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var spLoseScreen = document.querySelector("#spLoseScreen");
     var spWinScreen = document.querySelector("#spWinScreen");
     var mpEndScreen = document.querySelector("#mpEndScreen");
+    var bindingsScreen = document.querySelector("#bindingsScreen");
+
     // popups
     var pongExitPopup = document.querySelector("#pongExitPrompt"); 
     var pongBackToSPPopup = document.querySelector("#pongSPPrompt"); 
@@ -102,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var restartPopup = document.querySelector("#restartPrompt");
     var showBindsPopup = document.querySelector("#showBindsPrompt");
     var hideBindsPopup = document.querySelector("#hideBindsPrompt");
+    var selectBindingPopup = document.querySelector("#bindingPrompt");
     
     // managing screen
     let currentScreen;
@@ -157,6 +160,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var musicToggleP = document.querySelector("#musicToggleP");
     var soundToggleP = document.querySelector("#soundToggleP");
     var exitButtonP = document.querySelector("#exitP");
+
+    var up1Binding = document.querySelector("#up1Binding"); // bindings screen buttons
+    var down1Binding = document.querySelector("#down1Binding");
+    var up2Binding = document.querySelector("#up2Binding");
+    var down2Binding = document.querySelector("#down2Binding");
+
+    var displayUp1 = document.querySelector("#displayUp1"); // bindings screen bindings text
+    var displayDown1 = document.querySelector("#displayDown1");
+    var displayUp2 = document.querySelector("#displayUp2");
+    var displayDown2 = document.querySelector("#displayDown2");
+
+    var bindingPromptText = document.querySelector("#bindingPromptText");
 
     var textButtonsArray = [
         spPlayAgainW,
@@ -387,6 +402,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mainMenu.classList.toggle("hidden");
         currentScreen = mainMenu;
         lastScreen = null;
+        updateBindingDisplays();
     });
 
 
@@ -398,6 +414,40 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
         }
     });
+
+    // bindings
+    let listenFor = "";
+    up1Binding.addEventListener("click", () => popupBindingsPrompt("up1"));
+    down1Binding.addEventListener("click", () => popupBindingsPrompt("down1"));
+    up2Binding.addEventListener("click", () => popupBindingsPrompt("up2"));
+    down2Binding.addEventListener("click", () => popupBindingsPrompt("down2"));
+
+    function popupBindingsPrompt(control) {
+        if (selectBindingPopup.classList.contains("hidden")) {
+            listenFor = control;
+            console.log(control);
+            selectBindingPopup.classList.toggle("hidden");
+            currentScreen = selectBindingPopup;
+        }
+    }
+
+    function openBindings() {
+        if (!gameCanvas.classList.contains("hidden")) {
+            gameCanvas.classList.toggle("hidden");
+        }
+
+        hideVolumeBars();
+        hideVolumeBars2();
+        currentScreen.classList.toggle("hidden");
+        bindingsScreen.classList.toggle("hidden");
+        extraScreen = currentScreen; // for settings, dont set to lastScreen
+        currentScreen = bindingsScreen;
+    }
+    
+
+    bindings.addEventListener("click", openBindings);
+    bindingsP.addEventListener("click", openBindings);
+
 
     // resume button
     resumeButton.addEventListener("click", () => {
@@ -672,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentScreen = lastScreen;
                 lastScreen = settingsMenu;
                 hideVolumeBars2();
-                if (lastScreen == mpEndScreen || spLoseScreen || spWinScreen) {
+                if (lastScreen == mpEndScreen || lastScreen == spLoseScreen || lastScreen == spWinScreen) {
                     showScoreEnd();
                 }
                 break;
@@ -703,6 +753,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     console.log(`ERROR, NOT PLAYING PONG?`);
                 }
+                break;
+            case bindingsScreen:
+                currentScreen.classList.toggle("hidden");
+                extraScreen.classList.toggle("hidden");
+                currentScreen = extraScreen;
+                if (extraScreen == pauseMenu) {
+                    gameCanvas.classList.toggle("hidden");
+                    showVolumeBars();
+                } 
+                else { // extraScreen should be settings
+                    showVolumeBars2();
+                }
+                extraScreen = null;
                 break;
         }
 
@@ -987,6 +1050,91 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // separate event listener for bindings screen.
+    document.addEventListener("keydown", (event) => {
+        if (currentScreen == selectBindingPopup) {
+            let acceptedKeys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+            if (!acceptedKeys.includes(event.key)) {
+                bindingPromptText.innerHTML = "please press a different key!";
+            }
+
+            else {
+                if (listenFor == "up1") {
+                    switch (event.key) {
+                        case down1:
+                            down1 = up1;
+                            break;
+                        case up2:
+                            up2 = up1;
+                            break;
+                        case down2:
+                            down2 = up1;
+                            break;
+                    }
+                    up1 = event.key;
+                }
+                else if (listenFor == "down1") {
+                    switch (event.key) {
+                        case up1:
+                            up1 = down1;
+                            break;
+                        case up2:
+                            up2 = down1;
+                            break;
+                        case down2:
+                            down2 = down1;
+                            break;
+                    }
+                    down1 = event.key;
+                }
+                else if (listenFor == "up2") {
+                    switch (event.key) {
+                        case up1:
+                            up1 = up2;
+                            break;
+                        case down1:
+                            down1 = up2;
+                            break;
+                        case down2:
+                            down2 = up2;
+                            break;
+                    }
+                    up2 = event.key;
+                }
+                else if (listenFor == "down2") {
+                    switch (event.key) {
+                        case up1:
+                            up1 = down2;
+                            break;
+                        case down1:
+                            down1 = down2;
+                            break;
+                        case up2:
+                            up2 = down2;
+                            break;
+                    }
+                    down2 = event.key;
+                }
+                else {
+                    console.log("ERROR, listenfor VALUE NOT CONFIGURED");
+                }
+
+                updateBindingDisplays();
+                listenFor = "";
+                selectBindingPopup.classList.toggle("hidden");
+                currentScreen = bindingsScreen; // go back to bindings screen
+                bindingPromptText.innerHTML = "press any key or escape to cancel";
+            }
+        }
+    });
+
+    function updateBindingDisplays() {
+        displayUp1.innerHTML = up1;
+        displayDown1.innerHTML = down1;
+        displayUp2.innerHTML = up2;
+        displayDown2.innerHTML = down2;
+    }
+
     // check if key is being held, only want one trigger
     document.addEventListener("keydown", (event) => {
         let key = event.key;
@@ -1033,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case pauseMenu: 
                     case settingsMenu: 
-                    // TODO: GO TO BINDINGS SCREEN
+                        openBindings();
                         break;
                     case mpEndScreen:
                     case spLoseScreen:
@@ -1101,7 +1249,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             case "Escape":
                 if (pongIsOpen) {
-                    openSettings();
+                    switch (currentScreen) {
+                        case selectBindingPopup:
+                            listenFor = "";
+                            selectBindingPopup.classList.toggle("hidden");
+                            currentScreen = bindingsScreen;
+                            bindingPromptText.innerHTML = "press any key or escape to cancel";
+                            break;
+                        default:
+                            openSettings();
+                            break;
+                    }
                 }
                 break;
             case "m":
@@ -1314,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function stopDragging() {
-        if (!playingPong) {
+        if (!pongIsOpen) {
             return;
         } 
         if (draggingID != null) {
@@ -1649,6 +1807,7 @@ document.addEventListener('DOMContentLoaded', function () {
             endGame();
         }
         hideVolumeBars();
+        hideVolumeBars2();
         hideScores();
         hideAllScreens();
         hideAllPopups();
@@ -1674,6 +1833,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 lastScreen.classList.toggle("hidden");
             }
         }
+
         if (!gameCanvas.classList.contains("hidden")) {
             gameCanvas.classList.toggle("hidden");
         }
@@ -1698,8 +1858,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!spLoseScreen.classList.contains("hidden")) {
             spLoseScreen.classList.toggle("hidden");
         }
-        // TODO: ADD BINDINGS SCREEN
-
+        if (!bindingsScreen.classList.contains("hidden")) {
+            bindingsScreen.classList.toggle("hidden");
+        }
+        if (!settingsMenu.classList.contains("hidden")) {
+            settingsMenu.classList.toggle("hidden");
+        }
     }
 
     function hideAllPopups() {
@@ -1717,6 +1881,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (!pongBackToMainMenuPopup.classList.contains("hidden")) {
             pongBackToMainMenuPopup.classList.toggle("hidden");
+        }
+        if (!selectBindingPopup.classList.contains("hidden")) {
+            selectBindingPopup.classList.toggle("hidden");
         }
     }
 

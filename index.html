@@ -147,6 +147,9 @@
                 <p>restart game ?</p>
                 <p style="margin-top: 60px;"><span id="restartY" class="pongButton">(Y) yes</span> &nbsp; <span id="restartN" class="pongButton">(N) no</span></p>
             </div>
+            <div id="bindingPrompt" class="menuPong hidden">
+                <p id="bindingPromptText">press any key or escape to cancel</p>
+            </div>
 
             <p id="playerOneScore" class="hidden">1</p>
             <p id="playerTwoScore" class="hidden">2</p>
@@ -189,6 +192,13 @@
                 <p id="bindings" class="pongButton">(1) bindings</p>
                 <p class="volumePar"><span id="musicToggle" class="pongButton">music:</span> <span id="pongMusicS">100</span></p>
                 <p class="volumePar"><span id="soundToggle" class="pongButton">sound:</span> <span id="pongSoundS">100</span></p>
+            </div>
+            <div id="bindingsScreen" class="menuPong hidden">
+                <h2 class="pongTitle"><span class="flashing">></span> bindings</h2>
+                <p id="up1Binding" class="pongButton">player one up: <span id="displayUp1">U1</span></p>
+                <p id="down1Binding" class="pongButton">player one down: <span id="displayDown1">D1</span></p>
+                <p id="up2Binding" class="pongButton">player two up: <span id="displayUp2">U2</span></p>
+                <p id="down2Binding" class="pongButton">player two down: <span id="displayDown2">D2</span></p>
             </div>
             <div id="pausedScreen" class="pausedPong hidden">
                 <img id="pongRestartIcon" class="pongButton" src="img/pong/restart.png" alt="Continue Pong Button" width="100" draggable="false" ondragstart="return false;" oncontextmenu="return false;">
