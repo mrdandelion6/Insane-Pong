@@ -2,7 +2,7 @@
 
 A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. This site also features a very interactive pong game called **Insane Pong** with several different menu screens, 8 different modes of gameplay, and various features such as dashing, interactive audio, and setting the ball on fire! Employers who are interested in seeing my professional website should visit [faisals.ca](https://faisals.ca), ([repo here](https://github.com/mrdandelion6/faisals.ca)). 
 
-## Content
+## Site Content
 
 ### About Me
 This is the first website I've ever made, consisting mainly of text about me. Here are the topics I cover:
@@ -17,7 +17,7 @@ This is the first website I've ever made, consisting mainly of text about me. He
 Users can also play an advanced version of pong I coded from scratch! Has several menus and various difficulties of selection (see features below).
 
 
-## General Features
+## Site Features
 
 ### Scale Responsive Design
 The site features a scale responsive design with navigation buttons in the top bar. They collapse into a tray icon when the screen width is less than 1280px. In this state, users can toggle a vertical pop-up menu by clicking on the tray icon, providing a clean interface. The pong game also adjusts itself based on the viewport's size.
