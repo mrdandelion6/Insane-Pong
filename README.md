@@ -22,7 +22,7 @@ Users can also play an advanced version of pong I coded from scratch! Has severa
 ### Scale Responsive Design
 The site features a scale responsive design with navigation buttons in the top bar. They collapse into a tray icon when the screen width is less than 1280px. In this state, users can toggle a vertical pop-up menu by clicking on the tray icon, providing a clean interface. The pong game also adjusts itself based on the viewport's size.
 
-## Pong Features
+## Insane Pong Features
 
 ### Single-Player
 Users can select a single player option for the pong game if they would like to play alone against a computer of their choosen difficulty level.
