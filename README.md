@@ -41,6 +41,15 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 - Draggable sliders for mobile
 - Additional on screen buttons for slider movement enabling dash feature on mobile
 
+### Touch Events API:
+- The game is built to manage and handle several simultaneous touches at once, providing touch screen users with smooth gameplay.
+
+### Controls:
+Features several ways to control the sliders:
+- Keyboard (customizable binds).
+- Drag sliders (mouse or touch).
+- On screen buttons with toggleable visibility (intended for touch, but you can click as well).
+
 ### Several Interactive Views:
 - All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
 
