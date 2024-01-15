@@ -35,15 +35,6 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 - Multiplayer features: `Slow`, `Medium`, `Fast`, and `Blitz`. Increases the speed of the ball with harder difficulties.
 - Blitz & Impossible: These particular modes provide an exclusive slider boost feature which can be activated by double tapping in a direction (up or down).
 
-### QoL:
-- Customizable keybinds
-- Pausing and resuming
-- Draggable sliders for mobile
-- Additional on screen buttons for slider movement enabling dash feature on mobile
-
-### Touch Events API:
-- The game is built to manage and handle several simultaneous touches at once, providing touch screen users with smooth gameplay.
-
 ### Controls:
 Features several ways to control the sliders:
 - Keyboard (customizable binds).
@@ -53,7 +44,18 @@ Features several ways to control the sliders:
 ### Several Interactive Views:
 - All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
 
+### QoL:
+- Customizable keybinds.
+- Pausing and resuming.
+- Draggable sliders for mobile.
+- Additional on screen buttons for slider movement enabling dash feature on mobile.
+
 ### Game Sounds & Music (Coming Soon):
 - Togglable sound and music providing a more immersive feel for players.
 - Several different soundtracks depending on the choosen mode and difficulty.
 - A quick way to mute all volume is provided in every screen as well as user adjustable slider for both music and sound separately.
+
+## API Usage:
+
+### Touch Events API:
+- The game is built to manage and handle several simultaneous touches at once, providing touch screen users with smooth gameplay.
