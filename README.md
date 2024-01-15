@@ -44,7 +44,7 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 ### Several Interactive Views:
 - All of the listed pong features above make use of several different interactive views that can be switched between using clicks or specified keypresses!
 
-### Game Sounds & Music:
+### Game Sounds & Music (Coming Soon):
 - Togglable sound and music providing a more immersive feel for players.
 - Several different soundtracks depending on the choosen mode and difficulty.
 - A quick way to mute all volume is provided in every screen as well as user adjustable slider for both music and sound separately.
