@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var animations = [];
     var pongPreview = document.querySelector("#pongPreview");
     var pongPreviewButton = document.querySelector("#cupTitle");
+    var pongClickToPlay = document.querySelector("#clickToPlay");
     
     // pong main buttons
     var settingsButton = document.querySelector("#pongSettingsIcon");
@@ -395,15 +396,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // preview button
-    pongPreviewButton.addEventListener("click", () => {
+    pongPreviewButton.addEventListener("click", startPong);
+    pongClickToPlay.addEventListener("click", startPong);
+
+    function startPong() {
         pongIsOpen = true;
         pongPreview.classList.toggle("hidden"); // we can still toggle class for this because we used !important in .hidden in style.css
+        pongClickToPlay.classList.toggle("hidden");
         pong.classList.toggle("hidden");
         mainMenu.classList.toggle("hidden");
         currentScreen = mainMenu;
         lastScreen = null;
         updateBindingDisplays();
-    });
+    }
 
 
     // ============ PONG BUTTONS ============
@@ -1820,6 +1825,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pongIsOpen = false;
 
         pongPreview.classList.toggle("hidden");
+        pongClickToPlay.classList.toggle("hidden");
     }
 
     function hideAllScreens() {

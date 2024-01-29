@@ -261,6 +261,7 @@ h3 {
     font-size: medium;
     font-family: monospace;
     font-style: italic;
+    margin-bottom: 30px;
 }
 
 .title2 {
@@ -718,3 +719,7 @@ img.pongButton {
     margin-top: 120px;
 }
 
+#clickToPlay {
+    margin-left: 6vw;
+    cursor: pointer;
+}
