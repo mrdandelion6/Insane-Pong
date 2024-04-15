@@ -1,6 +1,6 @@
 # [faisals.me](http://faisals.me)
 
-A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. This site mainly features a very interactive pong game called **Insane Pong** with several different menu screens, 8 different modes of gameplay, and various features such as dashing, interactive audio, and setting the ball on fire! Employers who are interested in seeing my professional website should visit [faisals.ca](https://faisals.ca), ([repo here](https://github.com/mrdandelion6/faisals.ca)). 
+A website I made using HTML, CSS, and Javascript as a place to introduce myself informally. This site features a very interactive pong game called **Insane Pong** with several different menu screens, 8 different modes of gameplay, and various features such as dashing, interactive audio, and setting the ball on fire! Employers who are interested in seeing my professional website should visit [faisals.ca](https://faisals.ca), ([repo here](https://github.com/mrdandelion6/faisals.ca)). 
 
 ## Site Content
 
