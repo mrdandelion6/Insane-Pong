@@ -203,6 +203,9 @@ document.addEventListener('DOMContentLoaded', function () {
         blitzModeMP,
     ];
 
+    let musicAudio = new Audio();
+    let pauseMenuMusicAudio = new Audio(); // need additional audio for pausing music so we can resume original music from the same spot
+    let soundAudio = new Audio();
     var allButtonsArray = buttonsArray.concat(textButtonsArray);
 
     // pong items
@@ -337,6 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function adjustVolumeMusicSliderPositions() {
         updateVolumeTextValues();
+        updateVolume();
         soundSlider.style.width = "calc(25px + 8vw)";
         musicSlider.style.width = "calc(25px + 8vw)";
         soundSliderS.style.width = "calc(25px + 8vw)";
@@ -408,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentScreen = mainMenu;
         lastScreen = null;
         updateBindingDisplays();
+        playMusic(6); // start menu music
     }
 
 
@@ -633,9 +638,12 @@ document.addEventListener('DOMContentLoaded', function () {
         volumeCross.classList.toggle("hidden");
         volumeOn = !volumeOn;
 
-        // TODO: implement volume muting and unmuting
-        if (!volumeOn) {
-
+        if (!volumeOn) { // mute the audio
+            musicAudio.volume = 0;
+            soundAudio.volume = 0;
+        }
+        else { // unmute the audio
+            updateVolume();
         }
     }
     volumeButton.addEventListener("click", toggleVolume);
@@ -791,13 +799,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function quickToggleMusic() {
         if (musicVol != 0) {
             musicVol = 0;
-        }
-
-        else {
+        } else {
             musicVol = 100;
         }
-
         adjustVolumeMusicSliderPositions();
+        updateVolume();
     }
     
     soundToggle.addEventListener("click", quickToggleSound);
@@ -805,13 +811,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function quickToggleSound() {
         if (soundVol != 0) {
             soundVol = 0;
-        }
-
-        else {
+        } else {
             soundVol = 100;
         }
-
         adjustVolumeMusicSliderPositions();
+        updateVolume();
     }
 
     // select one player
@@ -1477,8 +1481,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 soundKnobS.style.left = horizontalPos2 + "px";
                 soundVol = 100 * (horizontalPos2 + 4) / sliderReference2.width;
             }
-    
             updateVolumeTextValues();
+            updateVolume();
         }, 10);
     }
 
@@ -1626,10 +1630,14 @@ document.addEventListener('DOMContentLoaded', function () {
         
         showScoreGame();
         showBinds();
+        let mult = 0.1; // multiplayer for audio
         
         if (playingPong === 1) {
             slider2.speed = assignCpu();
+            mult -= 0.1;
         }
+
+        playMusic(difficulty); // 4.0 is the blitz mode music, 4.1 is the impossible mode music
 
         function assignCpu() {
             if (difficulty == 1) {
@@ -1697,6 +1705,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     gameID = setInterval(nextTick, 10);
                     pongIsPaused = false;
+                    resumeMusic(difficulty);
+                    endMusic(1);
                 }
             }
         }
@@ -1726,6 +1736,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pauseMenu.classList.toggle("hidden");
         lastScreen = currentScreen;
         currentScreen = pauseMenu;
+        playMusic(5);
     }
 
     function freezeGame() {
@@ -1811,6 +1822,7 @@ document.addEventListener('DOMContentLoaded', function () {
         draggingSliders.s2 = null;
         velID1 = null;
         velID2 = null;
+        playMusic(6);
     }
 
     function exitPong() {
@@ -1832,6 +1844,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         pongPreview.classList.toggle("hidden");
         pongClickToPlay.classList.toggle("hidden");
+        endMusic();
     }
 
     function hideAllScreens() {
@@ -2515,6 +2528,75 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 600);
     }
     // ============= OTHER FUNCTIONS =============
+
+    // ===========================================
+    // ============= MUSIC FUNCTIONS =============
+
+    function pauseMusic() {
+        musicAudio.pause();
+    }
+
+    function resumeMusic() {
+        musicAudio.play();
+    }
+
+    function playMusic(diff) {
+        // in charge of playing the music 
+        // will pause the music if needed
+        // only expects values in [1, 2, 3, 4, 5, 6]
+        let src = "../audio/music/"
+        if (diff == 4) { // adjust when we get 4
+            playingPong == 2 ? diff += 0.1 : diff;
+        }
+        switch(diff) {
+            case 1: // easy mode
+                musicAudio.src = src + "1_Ji-Eun's_Sunset.mp3";
+                break;
+            case 2: // medium mode
+                musicAudio.src = src + "2_Fast_Lane.mp3";
+                break;
+            case 3: // hard mode
+                musicAudio.src = src + "3_Tuba_Archmage_Theme.mp3";
+                break;
+            case 4.0: // impossible mode (coolest fr)
+                musicAudio.src = src + "4.0_Intersect_Thunderbolt.mp3";
+                break;
+            case 4.1: // blitz mode
+                musicAudio.src = src + "4.1_Critical_Crystal.mp3";
+                break;
+            case 5: // pause menu
+                pauseMusic();
+                pauseMenuMusicAudio.src = src + "pause_music.mp3";
+                pauseMenuMusicAudio.loop = true;
+                pauseMenuMusicAudio.play();
+                return;
+            case 6:  // main menu
+                musicAudio.src = src + "menu_I_Secretly_Love_U.mp3";
+                break;
+            default:
+                console.log("ERROR: INVALID DIFFICULTY PASSED TO playMusic()");
+                return;
+        }
+        musicAudio.loop = true;
+        musicAudio.play();
+    }
+
+    function endMusic(pauseMenuMusic=0) {
+        pauseMenuMusicAudio.pause();
+        pauseMenuMusicAudio.currentTime = 0;
+        if (!pauseMenuMusic) {
+            musicAudio.pause();
+            musicAudio.currentTime = 0;
+        }
+    }
+
+    function updateVolume() {
+        musicAudio.volume = musicVol / 100;
+        soundAudio.volume = soundVol / 100;
+    }
+
+    // ============= MUSIC FUNCTIONS =============
+    // ===========================================
 
     // ============================== MORE FUNCTIONS ==============================
 });
