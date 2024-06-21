@@ -205,7 +205,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let musicAudio = new Audio();
     let pauseMenuMusicAudio = new Audio(); // need additional audio for pausing music so we can resume original music from the same spot
-    let soundAudio = new Audio();
+    let sounds = {
+        wall_hit: new Audio("../audio/sounds/wall_hit.mp3"),
+        slider_hit: new Audio("../audio/sounds/slider_hit.mp3"),
+        fire_hit: new Audio("../audio/sounds/fire_hit.mp3"),
+        goal: new Audio("../audio/sounds/goal.mp3"),
+        dash1: new Audio("../audio/sounds/dash.mp3"),
+        dash2: new Audio("../audio/sounds/dash.mp3"),
+        win: new Audio("../audio/sounds/win.mp3"),
+        lose: new Audio("../audio/sounds/lose.mp3"),
+        menu_button: new Audio("../audio/sounds/select.mp3"),
+        simple_button: new Audio("../audio/sounds/select2.mp3"),
+    }
     var allButtonsArray = buttonsArray.concat(textButtonsArray);
 
     // pong items
@@ -513,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function exitBut() {
         if (currentScreen != pongExitPopup) {
+            pingSound();
             pongExitPopup.classList.toggle("hidden");
             extraScreen = currentScreen;
             currentScreen = pongExitPopup; // dont set last screen
@@ -531,6 +543,7 @@ document.addEventListener('DOMContentLoaded', function () {
     rejectExit.addEventListener("click", cancelExit);
 
     function cancelExit() {
+        menuButtonSound();
         pongExitPopup.classList.toggle("hidden");
         if (extraScreen == gameCanvas) {
             resumeGame();
@@ -541,6 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // sp popups
     confirmBackSP.addEventListener("click", confirmSPexit);
     function confirmSPexit() {
+        menuButtonSound(); 
         endGame();
         hideVolumeBars();
         hideScores();
@@ -557,6 +571,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackSP.addEventListener("click", rejectSPexit);
     function rejectSPexit() {
+        menuButtonSound();
         pongBackToSPPopup.classList.toggle("hidden");
         if (lastScreen == gameCanvas) {
             resumeGame();
@@ -567,6 +582,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // mp popups
     confirmBackMP.addEventListener("click", confirmMPexit);
     function confirmMPexit() {
+        menuButtonSound();
         endGame();
         hideVolumeBars();
         hideScores();
@@ -582,6 +598,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackMP.addEventListener("click", rejectMPexit);
     function rejectMPexit() {
+        menuButtonSound();
         pongBackToMPPopup.classList.toggle("hidden");
         if (lastScreen == gameCanvas) {
             resumeGame();
@@ -600,6 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // main menu popups
     exitButtonP.addEventListener("click", popupExit);
     function popupExit() {
+        menuButtonSound();
         if (pongBackToMainMenuPopup.classList.contains("hidden")) {
             pongBackToMainMenuPopup.classList.toggle("hidden");
             lastScreen = currentScreen;
@@ -609,6 +627,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     confirmBackMM.addEventListener("click", confirmMMexit);
     function confirmMMexit() {
+        menuButtonSound();
         hideVolumeBars();
         hideScores();
         currentScreen.classList.toggle("hidden");
@@ -627,6 +646,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackMM.addEventListener("click", rejectMMexit);
     function rejectMMexit() {
+        menuButtonSound();
         pongBackToMainMenuPopup.classList.toggle("hidden");
         let tempScreen = lastScreen;
         lastScreen = currentScreen;
@@ -635,6 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // volume button
     function toggleVolume() {
+        simpleButtonSound();
         volumeCross.classList.toggle("hidden");
         volumeOn = !volumeOn;
 
@@ -692,6 +713,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // settings button
     settingsButton.addEventListener("click", openSettings);
     function openSettings() { // handles the pressing of escape. i know i shouldnt have this responsibility here but i dont want to refactor everything.. blame 2023 me
+        simpleButtonSound();
         switch(currentScreen) {
             case gameCanvas:
                 pauseGame();
@@ -712,8 +734,14 @@ document.addEventListener('DOMContentLoaded', function () {
             case bindingsScreen:
                 goBack();
                 break;
-            case pongBackToMainMenuPopup:
+            case pongExitPopup:
             case pongBackToSPPopup:
+            case pongBackToMPPopup:
+            case pongBackToMainMenuPopup:
+            case restartPopup:
+            case showBindsPopup:
+            case hideBindsPopup:
+            case selectBindingPopup:
                 break;
             default:
                 if (currentScreen == mainMenu) { // esc any other time (except on settings menu ofc)
@@ -728,7 +756,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 hideScores();
                 break;
         }
-        // toggle back to previous screen,  we're on settings menu
     }
 
     // back button 
@@ -826,6 +853,7 @@ document.addEventListener('DOMContentLoaded', function () {
         lastScreen = currentScreen;
         currentScreen = singlePlayerMenu;
         backButton.classList.toggle("hidden");
+        menuButtonSound();
     }
 
     // select two player    
@@ -836,6 +864,7 @@ document.addEventListener('DOMContentLoaded', function () {
         lastScreen = currentScreen;
         currentScreen = multiplayerMenu;
         backButton.classList.toggle("hidden");
+        menuButtonSound();
     }
 
     // single player menu buttons
@@ -1023,6 +1052,9 @@ document.addEventListener('DOMContentLoaded', function () {
             case up1:
                 pressedKeys.up1 = false;
                 if (slider1.dash) {
+                    if (difficulty == 4) {
+                        dash1Sound();
+                    }
                     slider1.dash = false; // if we were just in a dash, then a keyup shouldnt create another window!
                 }
                 else {
@@ -1033,16 +1065,22 @@ document.addEventListener('DOMContentLoaded', function () {
             case down1:
                 pressedKeys.down1 = false;
                 if (slider1.dash) {
+                    if (difficulty == 4) {
+                        dash1Sound();
+                    }
                     slider1.dash = false;
                 }
                 else {
                     downDashWindow1 = true;
                     dashWindowID = setTimeout(() => downDashWindow1 = false, 100);
-                }
+                }2
                 break;
             case up2:
                 pressedKeys.up2 = false;
                 if (slider2.dash) {
+                    if (difficulty == 4) {
+                        dash2Sound();
+                    }
                     slider2.dash = false;
                 }
                 else {
@@ -1053,6 +1091,9 @@ document.addEventListener('DOMContentLoaded', function () {
             case down2:
                 pressedKeys.down2 = false;
                 if (slider2.dash) {
+                    if (difficulty == 4) {
+                        dash2Sound();
+                    }
                     slider2.dash = false;
                 }
                 else {
@@ -1822,7 +1863,8 @@ document.addEventListener('DOMContentLoaded', function () {
         draggingSliders.s2 = null;
         velID1 = null;
         velID2 = null;
-        playMusic(6);
+        endMusic(1); // stop any pause menu music
+        playMusic(6); // start main menu music
     }
 
     function exitPong() {
@@ -2239,6 +2281,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let verticalBounce = ball.y <= 0 || ball.y >= (gameCanvas.height - ball.height)
             if (verticalBounce) {
                 ball.velocityY = -ball.velocityY;
+                wallHitSound();
             }
 
             let leftGoal = (ball.x <= 0);
@@ -2259,6 +2302,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     velX *= 1.5;
                     velY *= 1.5;
                     ball.onFire = true;
+                    fireHitSound();
+                } else {
+                    sliderHitSound();
                 }
                 ball.velocityX = velX;
                 ball.velocityY = velY;
@@ -2278,6 +2324,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     velX *= 1.5;
                     velY *= 1.5;
                     ball.onFire = true;
+                    fireHitSound();
+                } else {
+                    sliderHitSound();
                 }
                 ball.velocityX = velX;
                 ball.velocityY = velY;
@@ -2305,6 +2354,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 let player2Wins = playerTwoScore === 10;
 
                 if (!player1Wins && !player2Wins) { // no one has won
+                    soundAudio.src = "../audio/sounds/goal.mp3";
+                    soundAudio.play();
                     return;
                 }
 
@@ -2318,12 +2369,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         spWinScreen.classList.toggle("hidden");
                         lastScreen = currentScreen;
                         currentScreen = spWinScreen;
+                        winSound();
                     }
 
                     else if (player2Wins) { // user loses (computer wins)
                         spLoseScreen.classList.toggle("hidden");
                         lastScreen = currentScreen;
                         currentScreen = spLoseScreen;
+                        loseSound();
                     }
                 }
 
@@ -2337,7 +2390,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     mpEndScreen.classList.toggle("hidden");
                     lastScreen = currentScreen;
                     currentScreen = mpEndScreen;
+                    winSound();
                 }
+
+                pauseMusic();
 
                 freezeGame(); // dont endgame yet
             }
@@ -2578,6 +2634,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
         }
         musicAudio.loop = true;
+        if (!volumeOn) {
+            musicAudio.volume = 0;
+        }
         musicAudio.play();
     }
 
@@ -2591,11 +2650,83 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateVolume() {
-        musicAudio.volume = musicVol / 100;
-        soundAudio.volume = soundVol / 100;
+        if (volumeOn) {
+            musicAudio.volume = musicVol / 100;
+            for (const sound in sounds) {
+                sounds[sound].volume = soundVol / 100;
+            }
+            sounds["simple_button"].volume = 1;
+        } else {
+            sounds["simple_button"].volume = 0.5;
+        }
     }
 
     // ============= MUSIC FUNCTIONS =============
+    // ===========================================
+
+    // ===========================================
+    // ============= SOUND FUNCTIONS =============
+    function winSound() {
+        if (volumeOn) {
+            setTimeout(() => {sounds.win.play()}, 100);
+            setTimeout(() => {resumeMusic()}, 500);
+        }
+    }
+
+    function loseSound() {
+        if (volumeOn) {
+            setTimeout(() => {sounds.lose.play()}, 100);
+            setTimeout(() => {resumeMusic()}, 500);
+        }
+    }
+
+    function sliderHitSound() {
+        if (volumeOn) {
+            sounds.slider_hit.currentTime = 0;
+            sounds.slider_hit.play();
+        }
+    }
+
+    function wallHitSound() {
+        if (volumeOn) {
+            sounds.wall_hit.currentTime = 0;
+            sounds.wall_hit.play();
+        }
+    }
+
+    function fireHitSound() {
+        if (volumeOn) {
+            sounds.fire_hit.currentTime = 0;
+            sounds.fire_hit.play();
+        }
+    }
+
+    function menuButtonSound() {
+        if (volumeOn) {
+            sounds.menu_button.currentTime = 0;;
+            sounds.menu_button.play();
+        }
+    }
+
+    function simpleButtonSound() {
+        sounds.simple_button.currentTime = 0;
+        sounds.simple_button.play();
+    }
+
+    function dash1Sound() {
+        if (volumeOn) {
+            sounds.dash1.currentTime = 0;
+            sounds.dash1.play();
+        }
+    }
+
+    function dash2Sound() {
+        if (volumeOn) {
+            sounds.dash2.currentTime = 0;
+            sounds.dash2.play();
+        }
+    }
+    // ============= SOUND FUNCTIONS =============
     // ===========================================
 
     // ============================== MORE FUNCTIONS ==============================
