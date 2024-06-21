@@ -683,16 +683,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // settings button
     settingsButton.addEventListener("click", openSettings);
-    function openSettings() {
-        if (currentScreen != settingsMenu) {
-            if (currentScreen == gameCanvas) { // esc during game
+    function openSettings() { // handles the pressing of escape. i know i shouldnt have this responsibility here but i dont want to refactor everything.. blame 2023 me
+        switch(currentScreen) {
+            case gameCanvas:
                 pauseGame();
                 showVolumeBars();
                 hideScores();
                 hideBinds();
-            }
-
-            else if (currentScreen == pauseMenu) { // esc during pause
+                break;
+            case pauseMenu:
                 resumeGame();
                 currentScreen.classList.toggle("hidden");
                 lastScreen = currentScreen;
@@ -700,9 +699,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 hideVolumeBars();
                 showScoreGame();
                 showBinds();
-            }
-
-            else {
+                break;
+            case settingsMenu:
+            case bindingsScreen:
+                goBack();
+                break;
+            case pongBackToMainMenuPopup:
+            case pongBackToSPPopup:
+                break;
+            default:
                 if (currentScreen == mainMenu) { // esc any other time (except on settings menu ofc)
                     backButton.classList.toggle("hidden");
                 }
@@ -713,8 +718,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(adjustVolumeMusicSliderPositions, 1);
                 showVolumeBars2();
                 hideScores();
-            }
+                break;
         }
+        // toggle back to previous screen,  we're on settings menu
     }
 
     // back button 
