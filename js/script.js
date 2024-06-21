@@ -1073,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     downDashWindow1 = true;
                     dashWindowID = setTimeout(() => downDashWindow1 = false, 100);
-                }2
+                }
                 break;
             case up2:
                 pressedKeys.up2 = false;
