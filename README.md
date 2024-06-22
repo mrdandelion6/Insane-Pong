@@ -36,7 +36,7 @@ Users can also select a multiplayer option, allowing up to 2 users to play again
 
 ### Dashing
 - Blitz & Impossible: These particular modes provide an exclusive slider boost feature which can be activated by double tapping in a direction (up or down).
-- Dashing into the ball while it is not being served will set it on fire and boost its speed! Note this is the only way for players to beat the impossible level computer in Single Player mode.
+- Dashing into the ball while will set it on fire and greatly boost its speed. Note this is the only way for players to beat the impossible level computer in Single Player mode. Cannot dash into a serve.
   
 ### Controls:
 Features several ways to control the sliders:
