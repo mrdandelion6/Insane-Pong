@@ -14,8 +14,9 @@ This is the first website I've ever made, consisting mainly of text about me. He
 - **Courses Taken at UofT to Date**
 
 ### Insane Pong
-Users can also play an advanced version of pong I coded from scratch! Has several menus and various difficulties of selection (see features below).
+Users can also play an advanced version of pong I coded from scratch! Has several menus and various difficulties of selection. Here is a demo clip:
 
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=lZurldF77rg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Site Features
 
