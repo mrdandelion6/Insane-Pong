@@ -304,13 +304,13 @@ document.addEventListener('DOMContentLoaded', function () {
         s2: null
     }
 
+    gameKeys = ["1", "2", "3", "4", "Escape", "m", "p", "y", "n", "b", "r", "Enter"];
+
     function trackCursorOrTouchPosition(e) {
         let inputEvent = e.changedTouches ? e.changedTouches[e.changedTouches.length - 1] : e; // take first touch if touch event, else take the mousemovement
         MTPosition.x = inputEvent.clientX;
         MTPosition.y = inputEvent.clientY;
     }
-
-
 
     document.addEventListener('mousemove', trackCursorOrTouchPosition); // constantly track mouse position
     document.addEventListener('touchmove', trackCursorOrTouchPosition); // constantly track touch position (both mouse and touch position are tracked in same value)
@@ -472,6 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // resume button
     resumeButton.addEventListener("click", () => {
+        simpleButtonSound();
         currentScreen.classList.toggle("hidden");
         lastScreen = currentScreen;
         currentScreen = gameCanvas;
@@ -480,13 +481,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // restart button
-    restartButton.addEventListener("click", () => {
+    restartButton.addEventListener("click", () => promptRestart());
+    function promptRestart() {
         if (currentScreen != restartPopup) {
+            simpleButtonSound();
             restartPopup.classList.toggle("hidden");
             lastScreen = currentScreen;
             currentScreen = restartPopup;
         }
-    });
+    }
 
     confirmRestart.addEventListener("click", restartPong);
     rejectRestart.addEventListener("click", cancelRestart);
@@ -524,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function exitBut() {
         if (currentScreen != pongExitPopup) {
-            pingSound();
+            simpleButtonSound();
             pongExitPopup.classList.toggle("hidden");
             extraScreen = currentScreen;
             currentScreen = pongExitPopup; // dont set last screen
@@ -543,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function () {
     rejectExit.addEventListener("click", cancelExit);
 
     function cancelExit() {
-        menuButtonSound();
+        simpleButtonSound();
         pongExitPopup.classList.toggle("hidden");
         if (extraScreen == gameCanvas) {
             resumeGame();
@@ -554,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // sp popups
     confirmBackSP.addEventListener("click", confirmSPexit);
     function confirmSPexit() {
-        menuButtonSound(); 
+        simpleButtonSound(); 
         endGame();
         hideVolumeBars();
         hideScores();
@@ -571,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackSP.addEventListener("click", rejectSPexit);
     function rejectSPexit() {
-        menuButtonSound();
+        simpleButtonSound();
         pongBackToSPPopup.classList.toggle("hidden");
         if (lastScreen == gameCanvas) {
             resumeGame();
@@ -582,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // mp popups
     confirmBackMP.addEventListener("click", confirmMPexit);
     function confirmMPexit() {
-        menuButtonSound();
+        simpleButtonSound();
         endGame();
         hideVolumeBars();
         hideScores();
@@ -598,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackMP.addEventListener("click", rejectMPexit);
     function rejectMPexit() {
-        menuButtonSound();
+        simpleButtonSound();
         pongBackToMPPopup.classList.toggle("hidden");
         if (lastScreen == gameCanvas) {
             resumeGame();
@@ -617,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // main menu popups
     exitButtonP.addEventListener("click", popupExit);
     function popupExit() {
-        menuButtonSound();
+        simpleButtonSound();
         if (pongBackToMainMenuPopup.classList.contains("hidden")) {
             pongBackToMainMenuPopup.classList.toggle("hidden");
             lastScreen = currentScreen;
@@ -627,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     confirmBackMM.addEventListener("click", confirmMMexit);
     function confirmMMexit() {
-        menuButtonSound();
+        simpleButtonSound();
         hideVolumeBars();
         hideScores();
         currentScreen.classList.toggle("hidden");
@@ -646,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     rejectBackMM.addEventListener("click", rejectMMexit);
     function rejectMMexit() {
-        menuButtonSound();
+        simpleButtonSound();
         pongBackToMainMenuPopup.classList.toggle("hidden");
         let tempScreen = lastScreen;
         lastScreen = currentScreen;
@@ -761,6 +764,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // back button 
     backButton.addEventListener("click", goBack);
     function goBack() {
+        simpleButtonSound();
         switch(currentScreen) {
             case settingsMenu:
                 currentScreen.classList.toggle("hidden");
@@ -1109,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // separate event listener for bindings screen.
     document.addEventListener("keydown", (event) => {
         if (currentScreen == selectBindingPopup) {
-            let acceptedKeys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+            let acceptedKeys = ['q', 'w', 'e', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'z', 'x', 'c', 'v', 'n', ',', '.', '/', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
             if (!acceptedKeys.includes(event.key)) {
                 bindingPromptText.innerHTML = "please press a different key!";
             }
@@ -1194,7 +1198,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // check if key is being held, only want one trigger
     document.addEventListener("keydown", (event) => {
         let key = event.key;
-        if (["1", "2", "3", "4", "Escape", "m", "p", "y", "n"].includes(key)) {
+        if (gameKeys.includes(key)) {
             if (!pressedKeys[key]) {
                 pressedKeys[key] = true;
                 handleKeyPress(key, event);
@@ -1209,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // update key pressed status when key is released, also manage dash window
     document.addEventListener("keyup", (event) => {
         let key = event.key;
-        if (["1", "2", "3", "4", "Escape", "m", "p", "y", "n"].includes(key)) {
+        if (gameKeys.includes(key)) {
             pressedKeys[key] = false;
         } 
 
@@ -1312,8 +1316,45 @@ document.addEventListener('DOMContentLoaded', function () {
                             currentScreen = bindingsScreen;
                             bindingPromptText.innerHTML = "press any key or escape to cancel";
                             break;
-                        default:
-                            openSettings();
+                        case restartPopup:
+                            cancelRestart();
+                            break;
+                        case pongBackToSPPopup:
+                            rejectSPexit();
+                            break;
+                        case pongBackToMPPopup:
+                            rejectMPexit();
+                            break;
+                        case pongBackToMainMenuPopup:
+                            rejectMMexit();
+                            break;
+                        case pongExitPopup:
+                            cancelExit();
+                            break;
+                        default: // all other screens. openSettings() handles the escape key
+                            openSettings(); // bad practice, but i dont want to refactor everything here
+                            break;
+                    }
+                }
+            case "Enter":
+                if (pongIsOpen) {
+                    switch (currentScreen) {
+                        case restartPopup:
+                            restartPong();
+                            break;
+                        case pongBackToSPPopup:
+                            confirmSPexit();
+                            break;
+                        case pongBackToMPPopup:
+                            confirmMPexit();
+                            break;
+                        case pongBackToMainMenuPopup:
+                            confirmMMexit();
+                            break;
+                        case pongExitPopup:
+                            exitPong();
+                            break;
+                        default: 
                             break;
                     }
                 }
@@ -1337,6 +1378,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     case pongExitPopup:
                         exitPong();
                         break;
+                    case restartPopup:
+                        restartPong();
+                        break;
                     default:
                         break;
                 }
@@ -1355,11 +1399,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     case pongExitPopup:
                         cancelExit();
                         break;
+                    case restartPopup:
+                        cancelRestart();
+                        break;
                     default:
                         break;
                 }
                 break;
-            
+            case "b":
+                goBack();
+                break;
+            case "r":
+                if (currentScreen == pauseMenu) {
+                    promptRestart();
+                }
+                break;
+                        
 
             // for the movement keys, handleKeyPress() disables the default behaviour of those keys, in case they keys include up arrow and down arrow.
             // the actual slider movement happens in drawSliders()
@@ -1697,6 +1752,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function startSinglePlayer() {
+        menuButtonSound();
         currentScreen.classList.toggle("hidden");
         gameCanvas.classList.toggle("hidden");
         lastScreen = currentScreen;
@@ -1708,6 +1764,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function startMultiplayer() {
+        menuButtonSound();
         currentScreen.classList.toggle("hidden");
         gameCanvas.classList.toggle("hidden");
         lastScreen = currentScreen;
