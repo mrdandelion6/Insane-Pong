@@ -53,7 +53,7 @@ Features several ways to control the sliders:
 - Draggable sliders for mobile.
 - Additional on screen buttons for slider movement enabling dash feature on mobile.
 
-### Game Sounds & Music (Coming Soon):
+### Game Sounds & Music:
 - Togglable sound and music providing a more immersive feel for players.
 - Several different soundtracks depending on the choosen mode and difficulty.
 - A quick way to mute all volume is provided in every screen as well as user adjustable slider for both music and sound separately.
