@@ -2787,4 +2787,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // ===========================================
 
     // ============================== MORE FUNCTIONS ==============================
+    
+    // ============================== NON-GAME ==============================
+    let img = document.getElementById('me_pic');
+    let elements = [
+        document.getElementById('explode'),
+        document.getElementById('expansion'),
+        document.getElementById('hallway'),
+        document.getElementById('sphere'),
+        document.getElementById('matrix'),
+        document.getElementById('spin'),
+        document.getElementById('random')
+    ];
+    img.onclick = () => {
+        let rand = Math.floor(Math.random() * elements.length);
+        img.classList.toggle('invis');
+        elements[rand].classList.toggle('invis');
+        setTimeout(async () => {
+            elements[rand].classList.toggle('invis');
+        }, 1200);
+    }
+    // ============================== NON-GAME ==============================
+
 });

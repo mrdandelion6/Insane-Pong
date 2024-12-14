@@ -724,3 +724,20 @@ img.pongButton {
     margin-left: 6vw;
     cursor: pointer;
 }
+
+#picture_container img {
+    float: right;
+    margin-left: 1vw;
+    margin-bottom: 1vw;
+    margin-right: 15vw;
+}
+
+#picture_container::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.invis {
+    display: none;
+}
