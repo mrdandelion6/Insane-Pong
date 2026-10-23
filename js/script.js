@@ -273,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
         velocityY: 0,
         velocityX: 0,
         onFire: false,
+        onPlasma: false,
         xRelative: 50 // percentage relative to canvas size. 50 is 50% across canvas so halfway. used to adjust the ball's position on resizing.
     }
     let velID1 = null;
@@ -1883,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ball.exists = false;
         ball.serve = true;
         ball.onFire = false;
+        ball.onPlasma = false;
         ball.x = gameCanvas.width / 2 - 10;
         ball.y = gameCanvas.height / 2 - 10;
         ball.regSpeed = ball.startSpeed;
@@ -2133,7 +2135,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // factored out redraw functions at top level so resize events may call them 
-    function redrawBall() { 
+    function redrawBall() {
+        if (difficulty == 4 && ball.onPlasma) { // blitz only: faint blue glow around a plasma ball, fading out from its center
+            let centerX = ball.x + ball.width / 2;
+            let centerY = ball.y + ball.height / 2;
+            let radius = ball.width * 4;
+            let glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+            glow.addColorStop(0, "rgba(110, 210, 255, 0.35)");
+            glow.addColorStop(1, "rgba(110, 210, 255, 0)");
+            ctx.fillStyle = glow;
+            ctx.fillRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        }
         ctx.beginPath();
         ctx.fillStyle = "red";
         ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
@@ -2269,6 +2281,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ball.exists = true;
                 ball.serve = true;
                 ball.onFire = false;
+                ball.onPlasma = false;
 
                 if (blitzMode) {
                     portalDir = "right"; // portal shoots ball to right
@@ -2280,29 +2293,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function drawTrail() {
-            if (blitzMode && !trailCD) { // ping a lingering shrinking trail once!
+            if (blitzMode && (!trailCD || ball.onPlasma)) { // ping a lingering shrinking trail once! plasma skips the cooldown for a denser trail
 
                 let fireOrange = "rgba(255, 165, 0, 0.5)"
+                let plasmaBlue = "rgba(110, 210, 255, 0.85)"
+                let plasmaCore = "rgba(225, 245, 255, 0.95)"
         
-                if(slider1.dash) {
-                    fireTrail(slider1, fireOrange, "whitesmoke");
+                if (!trailCD) {
+                    if(slider1.dash) {
+                        fireTrail(slider1, fireOrange, "whitesmoke");
+                    }
+                    if(slider2.dash) {
+                        fireTrail(slider2, fireOrange, "whitesmoke");
+                    }
+                    if(ball.onFire) {
+                        fireTrail(ball, fireOrange); // don't pass in an item color for ball
+                    }
+                    trailCD = true;
+                    setTimeout(() => trailCD = false, 20);
                 }
-                if(slider2.dash) {
-                    fireTrail(slider2, fireOrange, "whitesmoke");
-                }
-                if(ball.onFire) {
-                    fireTrail(ball, fireOrange); // don't pass in an item color for ball
+                if(ball.onPlasma) {
+                    fireTrail(ball, plasmaBlue, undefined, 3, 5); // thick outer glow, scattered a bit
+                    fireTrail(ball, plasmaCore, "white", 1.5, 2); // bright core drawn on top, scattered less so it stays solid
                 }
 
-                function fireTrail(item, trailColour, itemColour) { // continuously draw an item on the canvas in a fixed position and have it shrink
-                    // item has properties x, y, width, height to be drawn!
+                function fireTrail(item, trailColour, itemColour, scale = 1, jitter = 0) { // continuously draw an item on the canvas in a fixed position and have it shrink
+                    // item has properties x, y, width, height to be drawn! scale makes the trail thicker than the item
+                    // jitter randomly offsets the trail by up to that many pixels in each direction
 
                     let x = item.x; // fix all the variable values!
                     let y = item.y;
-                    let w = item.width;
-                    let h = item.height;
-                    let centerX = x + w / 2;
-                    let centerY = y + h / 2;
+                    let centerX = x + item.width / 2 + (Math.random() * 2 - 1) * jitter;
+                    let centerY = y + item.height / 2 + (Math.random() * 2 - 1) * jitter;
+                    let w = item.width * scale;
+                    let h = item.height * scale;
 
                     let trailID = drawFlame(trailColour, itemColour);
                     setTimeout(killTrail, 400, trailID); // kill the trail after 
@@ -2328,9 +2352,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         clearInterval(ID);
                     }
                 }
-
-                trailCD = true;
-                setTimeout(() => trailCD = false, 20);
             }
         }
 
@@ -2347,7 +2368,10 @@ document.addEventListener('DOMContentLoaded', function () {
             let sliderHit2 = (ball.velocityX < 0) && (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
 
             if (sliderHit1) {
+                let wasOnFire = ball.onFire || ball.onPlasma;
+                let wasPlasma = ball.onPlasma;
                 ball.onFire = false;
+                ball.onPlasma = false;
                 let velY = ball.velocityY + slider1.velocityY;
                 let neg = velY < 0;
                 velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
@@ -2356,6 +2380,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     velY = -velY;
                 }
                 if (slider1.dash && !ball.serve) {
+                    velX *= 1.5;
+                    velY *= 1.5;
+                    if (wasOnFire) { // dashing into a fire or plasma ball makes it plasma
+                        velX *= 1.15;
+                        velY *= 1.15;
+                        ball.onPlasma = true;
+                    } else {
+                        ball.onFire = true;
+                    }
+                    fireHitSound();
+                } else if (wasPlasma) { // returning plasma without a dash demotes it to fire
                     velX *= 1.5;
                     velY *= 1.5;
                     ball.onFire = true;
@@ -2369,7 +2404,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             else if (sliderHit2) {
+                let wasOnFire = ball.onFire || ball.onPlasma;
+                let wasPlasma = ball.onPlasma;
                 ball.onFire = false;
+                ball.onPlasma = false;
                 let velY = ball.velocityY + slider2.velocityY;
                 let neg = velY < 0;
                 velY = Math.min(Math.abs(velY), ball.regSpeed * 0.55);
@@ -2378,6 +2416,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     velY = -velY;
                 }
                 if (slider2.dash && !ball.serve) {
+                    velX *= 1.5;
+                    velY *= 1.5;
+                    if (wasOnFire) { // dashing into a fire or plasma ball makes it plasma
+                        velX *= 1.15;
+                        velY *= 1.15;
+                        ball.onPlasma = true;
+                    } else {
+                        ball.onFire = true;
+                    }
+                    fireHitSound();
+                } else if (wasPlasma) { // returning plasma without a dash demotes it to fire
                     velX *= 1.5;
                     velY *= 1.5;
                     ball.onFire = true;
@@ -2393,6 +2442,7 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (leftGoal) {
                 playerOneScore ++;
                 ball.onFire = false;
+                ball.onPlasma = false;
                 ball.exists = false;
                 showScoreGame();
                 checkWin();
@@ -2401,6 +2451,7 @@ document.addEventListener('DOMContentLoaded', function () {
             else if (rightGoal) {
                 playerTwoScore ++;
                 ball.onFire = false;
+                ball.onPlasma = false;
                 ball.exists = false;
                 showScoreGame();
                 checkWin();
