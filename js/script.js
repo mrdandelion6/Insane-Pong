@@ -2343,8 +2343,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let leftGoal = (ball.x <= 0);
             let rightGoal = (ball.x >= (gameCanvas.width - ball.width));
-            let sliderHit1 = ((ball.x + ball.width) > slider1.x) && (ball.y + ball.height > slider1.y) && (ball.y < slider1.y + slider1.height);
-            let sliderHit2 = (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
+            let sliderHit1 = (ball.velocityX > 0) && ((ball.x + ball.width) > slider1.x) && (ball.y + ball.height > slider1.y) && (ball.y < slider1.y + slider1.height);
+            let sliderHit2 = (ball.velocityX < 0) && (ball.x < slider2.x + slider2.width) && (ball.y + ball.height > slider2.y) && (ball.y < slider2.y + slider2.height);
 
             if (sliderHit1) {
                 ball.onFire = false;
